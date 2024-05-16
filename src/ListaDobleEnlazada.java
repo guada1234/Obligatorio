@@ -50,7 +50,7 @@ public class ListaDobleEnlazada<T extends Comparable<T>> {
 
         }
     }}
-    //public static void Listaenlazada<T> intercambiar(Object objeto, int direccion){
+
 
 
 

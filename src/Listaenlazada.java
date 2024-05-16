@@ -200,45 +200,10 @@ public class Listaenlazada<T extends Comparable<T>> implements Lista<T> { //comp
 
         return resultado;
     }
-    //public Listaenlazada<T> compararDistintos(Listaenlazada<Integer> p){
-     //   if(this.compararIguales(p) == null){
-    //        Listaenlazada<T> resultado1 = new Listaenlazada<T>();
-    //        int posicion1 = p.getsize();
-    //        int posicion2 = this.getsize();
-     //       Node<T> primero2 = this.getPrimero();
-       //     Node<T> primero1 = (Node<T>) p.getPrimero();
-         //   for (int i = 0; i < posicion1; i++) {
-     //           if(resultado1.getPrimero()== null){
-     //               resultado1.setPrimero(primero1);
-       //         }
-      //          else{resultado1.addLast(primero1.getValue());}}
 
-        //    for (int j = 0; j < posicion2; j++) {
-          //      if(resultado1.getPrimero()== null){
-           //         resultado1.setPrimero(primero2);
-             //   }
-               // else{resultado1.addLast(primero2.getValue());}}} else if () {
-
-        //}
 
     }
 
-
-
-    //}
-
-
-//}
-
-
-
-
-
-
-//Visualizar:
-//como es la interface a nuestros ojosno existe la interface, por lo que podemos hacer un for y no movernos con los nodos
-//usamos try y catch, cuando usamos una funcion dentro de otra, que sabemos que se puede romper, sino lo haceos en el main
-// public Listaenlazada<T> intercambiar(Object objeto, int direccion){
 
 
 
