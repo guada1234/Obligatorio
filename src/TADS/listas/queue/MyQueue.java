@@ -1,4 +1,4 @@
-package uy.edu.um.adt.queue;
+package TADS.listas.queue;
 
 public interface MyQueue<T> {
 

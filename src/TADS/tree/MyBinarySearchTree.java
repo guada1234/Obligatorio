@@ -1,4 +1,4 @@
-package uy.edu.um.prog2.adt.tree;
+package TADS.tree;
 
 public interface MyBinarySearchTree <K extends Comparable<K>, T> {
 

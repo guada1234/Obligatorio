@@ -1,4 +1,4 @@
-package uy.edu.um.adt.circularlinkedlist;
+package TADS.listas.circularlinkedlist;
 
 public interface MyCircularLinkedList<T> {
     void add(T value);

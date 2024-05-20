@@ -1,4 +1,4 @@
-package uy.edu.um.prog2.adt.tree;
+package TADS.tree;
 
 public class WrongInfo extends Exception{
 }

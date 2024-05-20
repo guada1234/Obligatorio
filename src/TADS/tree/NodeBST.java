@@ -1,4 +1,4 @@
-package uy.edu.um.prog2.adt.tree;
+package TADS.tree;
 
 public class NodeBST <K extends Comparable<K>, T> {
     K key;

@@ -1,6 +1,6 @@
-package uy.edu.um.prog2.adt.tree;
+package TADS.tree;
 
-import uy.edu.um.prog2.adt.MyList;
+import TADS.listas.linkedlist.*;
 
 public class Tree<K,T> implements MyTree<K,T> {
 
@@ -54,17 +54,17 @@ public class Tree<K,T> implements MyTree<K,T> {
     }
 
     @Override
-    public MyList<K> inOrder() {
+    public MyLinkedListImpl<K> inOrder() {
         return null;
     }
 
     @Override
-    public MyList<K> preOrder() {
+    public MyLinkedListImpl<K> preOrder() {
         return null;
     }
 
     @Override
-    public MyList<K> postOrder() {
+    public MyLinkedListImpl<K> postOrder() {
         return null;
     }
 

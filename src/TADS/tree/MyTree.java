@@ -1,8 +1,8 @@
-package uy.edu.um.prog2.adt.tree;
+package TADS.tree;
 
 
 
-import uy.edu.um.prog2.adt.MyList;
+import TADS.listas.linkedlist.MyLinkedListImpl;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public interface MyTree<K, T> {
     void insert(K key, T data, K parentKey) throws EntidadNoExiste, InformacionInvalida;
 
     void delete(K key) throws InformacionInvalida;
-    MyList<K> inOrder();
-    MyList<K> preOrder();
-    MyList<K> postOrder();
+    MyLinkedListImpl<K> inOrder();
+    MyLinkedListImpl<K> preOrder();
+    MyLinkedListImpl<K> postOrder();
 }

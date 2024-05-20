@@ -1,4 +1,4 @@
-package uy.edu.um.prog2.adt.tree;
+package TADS.tree;
 
 public class BinaryTree<K extends Comparable<K>, T> implements MyBinarySearchTree<K , T>{
     private NodeBST<K,T> raiz;

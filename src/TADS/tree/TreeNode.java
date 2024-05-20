@@ -1,7 +1,8 @@
-package uy.edu.um.prog2.adt.tree;
+package TADS.tree;
 
-import uy.edu.um.prog2.adt.MyLinkedListImpl;
-import uy.edu.um.prog2.adt.MyList;
+
+import TADS.listas.linkedlist.MyLinkedListImpl;
+import TADS.listas.linkedlist.MyList;
 
 public class TreeNode<K, T> {
     K key;
@@ -112,6 +113,7 @@ public class TreeNode<K, T> {
                 lista.add(agregarDerecho);
             }
         }
+        return lista;
     }
 
     public K getKey() {
