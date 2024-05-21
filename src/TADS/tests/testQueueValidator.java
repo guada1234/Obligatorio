@@ -10,41 +10,35 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class testQueueValidator {
     @Test
     public void testEnqueueDequeue() throws EmptyQueueException {
-        MyQueue queue = new MyLinkedListImpl();
-        Node node1 = new Node<>('k');
-        Node node2 = new Node<>('m');
-        Node node3 = new Node<>('X');
-        queue.enqueue(node1);
-        queue.enqueue(node2);
-        queue.enqueue(node3);
+        MyQueue<String> queue = new MyLinkedListImpl<>();
+        queue.enqueue("k");
+        queue.enqueue("m");
+        queue.enqueue("X");
         //check que los agrego a los 3
         assertEquals(3, queue.size());
         //check elementos y dequeue
         try {
-            assertEquals(node1, queue.dequeue());
+            assertEquals("k", queue.dequeue());
         } catch (EmptyQueueException e) {
             throw new EmptyQueueException();
         }
         try {
-            assertEquals(node2, queue.dequeue());
+            assertEquals("m", queue.dequeue());
         } catch (EmptyQueueException e) {
             throw new EmptyQueueException();
         }
         try {
-            assertEquals(node3, queue.dequeue());
+            assertEquals("X", queue.dequeue());
         } catch (EmptyQueueException e) {
             throw new EmptyQueueException();
         }
     }
     public void testContains(){
         MyQueue queue = new MyLinkedListImpl();
-        Node node1 = new Node<>('k');
-        Node node2 = new Node<>('m');
-        Node node3 = new Node<>('X');
+        Node node1 = new Node<>("X");
         queue.enqueue(node1);
-        queue.enqueue(node2);
-        queue.enqueue(node3);
-        //como lo chequeamos?
+        assertEquals("True", queue.contains("X"));
+
     }
 
     public void testSize(){ //preguntar
@@ -53,12 +47,8 @@ public class testQueueValidator {
         assertEquals(0,queue.size());
 
         //agregamos y verificamos
-        Node node1 = new Node<>('k');
-        Node node2 = new Node<>('m');
-        Node node3 = new Node<>('X');
-        queue.enqueue(node1);
-        queue.enqueue(node2);
-        queue.enqueue(node3);
-        assertEquals(3,queue.size());
+        queue.enqueue("L");
+        queue.enqueue("P");
+        assertEquals(2,queue.size());
     }
 }
