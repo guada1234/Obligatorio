@@ -34,10 +34,6 @@ public class HashImpl<K, V> implements HashTable<K, V> {
             }
         }
         table[posicion] = new HashNode<>(key, value);
-
-
-
-
     }
 
 
@@ -54,12 +50,55 @@ public class HashImpl<K, V> implements HashTable<K, V> {
 
 
     @Override
-    public boolean contains(K key) {
-        return false;
+    public boolean contains(K key) throws InformacionInvalida {
+        if (key == null) {
+            throw new InformacionInvalida();
+        }
+        int hashCode = key.hashCode();
+        int posicion = hashCode % table.length;
+        boolean encontrado = false;
+        int contador = 0;
+        while (table[posicion].getKey() != key) {
+            posicion++;
+            contador ++;
+            if(contador==table.length){
+                break;
+            }
+            if(posicion == table.length && contador < table.length){
+                posicion = 0;
+            }
+        }
+        if(table[posicion].getKey() == key){
+            encontrado = true;
+        }
+        return encontrado;
     }
 
     @Override
-    public void remove(K clave) {
-
+    public void remove(K key) throws InformacionInvalida  {
+        if (key == null) {
+            throw new InformacionInvalida();
+        }
+        if(!contains(key)){
+            throw new InformacionInvalida();
+        }
+        else{
+        int hashCode = key.hashCode();
+        int posicion = hashCode % table.length;
+        int contador = 0;
+        while (table[posicion].getKey() != key && contador < table.length) {
+            posicion++;
+            contador ++;
+            if(contador==table.length){
+                break;
+            }
+            if(posicion == table.length ){
+                posicion = 0;
+            }
+        }
+        if(table[posicion].getKey() == key){
+            table[posicion] = null;
+        }
+    }
     }
 }
