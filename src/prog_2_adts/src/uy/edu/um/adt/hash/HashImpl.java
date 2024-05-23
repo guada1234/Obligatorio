@@ -122,30 +122,5 @@ public class HashImpl<K, V> implements HashTable<K, V> {
 
     }
 
-//        if (table[posicion] == null) {
-//            posicion = this.getNotNullPosition(posicion);
-//            if(table[posicion].getKey() == key){
-//                table[posicion] = null;
-//            }
-//        }
-//        while (table[posicion].getKey() != key ) {
-//            posicion = (posicion+1)% table.length;
-//            contador ++;
-//            if (table[posicion] == null) {
-//                posicion = this.getNotNullPosition(posicion);
-//            }
-//            if(table[posicion].getKey() == key){
-//                table[posicion] = null;
-//            }
-//            if(contador==table.length){
-//                break;
-//            }
-//            if (posicion == table.length && contador < table.length) {
-//                posicion = 0;
-//            }
-//
-//        }
-//    }
-//}
 
 
