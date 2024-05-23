@@ -24,7 +24,7 @@ public class HashImpl<K, V> implements HashTable<K, V> {
         int hashCode = key.hashCode();
         int posicion = hashCode % table.length;
         while (table[posicion] != null) {
-            posicion++;
+            posicion = (posicion+1)% table.length;
             if(posicion == table.length){
                 posicion = 0;
             }
@@ -54,20 +54,36 @@ public class HashImpl<K, V> implements HashTable<K, V> {
         int posicion = hashCode % table.length;
         boolean encontrado = false;
         int contador = 0;
-        while (table[posicion].getKey() != key) {
-            posicion++;
-            contador ++;
-            if(contador==table.length){
-                break;
-            }
-            if(posicion == table.length && contador < table.length){
-                posicion = 0;
+        if (table[posicion] == null) {
+            posicion = this.getNotNullPosition(posicion);
+            if(table[posicion].getKey() == key){
+                encontrado = true;
             }
         }
-        if(table[posicion].getKey() == key){
-            encontrado = true;
-        }
+            while (!encontrado) {
+                posicion = (posicion+1)% table.length;
+                contador++;
+                if (table[posicion] == null) {
+                    posicion = this.getNotNullPosition(posicion);
+                }
+                if(table[posicion].getKey() == key){
+                    encontrado = true;
+                }
+                if (contador == table.length) {
+                    break;
+                }
+                if (posicion == table.length && contador < table.length) {
+                    posicion = 0;
+                }
+            }
         return encontrado;
+    }
+
+    public int getNotNullPosition(int posicion) {
+        while (table[posicion]==null) {
+            posicion = (posicion+1)% table.length;
+        }
+        return posicion;
     }
 
     @Override
@@ -75,26 +91,61 @@ public class HashImpl<K, V> implements HashTable<K, V> {
         if (key == null) {
             throw new InformacionInvalida();
         }
-        if(!contains(key)){
-            throw new InformacionInvalida();
-        }
-        else{
         int hashCode = key.hashCode();
         int posicion = hashCode % table.length;
+        boolean encontrado = false;
         int contador = 0;
-        while (table[posicion].getKey() != key && contador < table.length) {
-            posicion++;
-            contador ++;
-            if(contador==table.length){
+        if (table[posicion] == null) {
+            posicion = this.getNotNullPosition(posicion);
+            if(table[posicion].getKey() == key){
+                table[posicion] = null;
+            }
+        }
+        while (!encontrado) {
+            posicion = (posicion+1)% table.length;
+            contador++;
+            if (table[posicion] == null) {
+                posicion = this.getNotNullPosition(posicion);
+            }
+            if(table[posicion].getKey() == key){
+                encontrado = true;
+                table[posicion] = null;
+            }
+            if (contador == table.length) {
                 break;
             }
-            if(posicion == table.length ){
+            if (posicion == table.length && contador < table.length) {
                 posicion = 0;
             }
         }
-        if(table[posicion].getKey() == key){
-            table[posicion] = null;
-        }
     }
+
     }
-}
+
+//        if (table[posicion] == null) {
+//            posicion = this.getNotNullPosition(posicion);
+//            if(table[posicion].getKey() == key){
+//                table[posicion] = null;
+//            }
+//        }
+//        while (table[posicion].getKey() != key ) {
+//            posicion = (posicion+1)% table.length;
+//            contador ++;
+//            if (table[posicion] == null) {
+//                posicion = this.getNotNullPosition(posicion);
+//            }
+//            if(table[posicion].getKey() == key){
+//                table[posicion] = null;
+//            }
+//            if(contador==table.length){
+//                break;
+//            }
+//            if (posicion == table.length && contador < table.length) {
+//                posicion = 0;
+//            }
+//
+//        }
+//    }
+//}
+
+
