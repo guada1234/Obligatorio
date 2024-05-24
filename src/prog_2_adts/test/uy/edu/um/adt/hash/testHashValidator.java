@@ -8,8 +8,10 @@ import prog_2_adts.src.uy.edu.um.adt.hash.InformacionInvalida;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class testHashValidator {
+
+
     @Test
-    public void testPut() throws InformacionInvalida {
+    public void testPutContains() throws InformacionInvalida {
         HashImpl<Integer,String> hash = new HashImpl<>();
         hash.put(1,"H");
         hash.put(2,"L");
@@ -34,5 +36,14 @@ public class testHashValidator {
     public void testeExcepctions() throws InformacionInvalida {
         HashImpl<Integer,String> hash = new HashImpl<>();
         assertThrows(InformacionInvalida.class, ()->{hash.remove(null);});
+    }
+    @Test
+    public void testFindPosition()throws InformacionInvalida{
+        HashImpl<Integer,String> hash = new HashImpl<>();
+        hash.put(1,"H");
+        hash.put(2,"L");
+        hash.put(3,"T");
+        hash.put(9,"O");
+        assertEquals(0,hash.findPosition(9));
     }
 }
