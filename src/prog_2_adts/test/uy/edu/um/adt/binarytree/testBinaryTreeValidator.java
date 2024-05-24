@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class testBinaryTreeValidator {
 
-    private BinaryTree<Integer,String> binaryTree;
+
 
     @Test
     public void testSearchAdd() throws InvalidKey, EmptyTree {
