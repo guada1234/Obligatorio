@@ -185,7 +185,7 @@ public class HashImpl<K, V> implements HashTable<K, V> {
         }
         if(table[posicion].getKey() == key){
             encontrado = true;
-            res = table[posicion].getData();;
+            res = table[posicion].getData();
         }
         while (!encontrado) {
             posicion = (posicion+1)% table.length;
