@@ -37,13 +37,5 @@ public class testHashValidator {
         HashImpl<Integer,String> hash = new HashImpl<>();
         assertThrows(InformacionInvalida.class, ()->{hash.remove(null);});
     }
-    @Test
-    public void testFindPosition()throws InformacionInvalida{
-        HashImpl<Integer,String> hash = new HashImpl<>();
-        hash.put(1,"H");
-        hash.put(2,"L");
-        hash.put(3,"T");
-        hash.put(9,"O");
-        assertEquals(0,hash.findPosition(9));
-    }
+
 }

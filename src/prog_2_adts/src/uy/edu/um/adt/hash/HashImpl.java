@@ -127,48 +127,7 @@ public class HashImpl<K, V> implements HashTable<K, V> {
         }
     }
 
-    @Override
-    public int findPosition(K key) throws InformacionInvalida {
-        int posicionReal = -1;
-        if(!contains(key)||key == null)  {
-            throw new InformacionInvalida();
-        }
-        else{
-            int hashCode = key.hashCode();
-            int posicion = hashCode % table.length;
-            boolean encontrado = false;
-            int contador = 0;
-            if (table[posicion] == null) {
-                posicion = this.getNotNullPosition(posicion);
-                if(table[posicion].getKey().equals(key)){
-                    posicionReal = posicion;
-                }
-            }
-            if(table[posicion].getKey().equals(key)){
-                encontrado = true;
-                posicionReal = posicion;
-            }
-            while (!encontrado) {
-                posicion = (posicion+1)% table.length;
-                contador++;
-                if (table[posicion] == null) {
-                    posicion = this.getNotNullPosition(posicion);
-                }
-                if(table[posicion].getKey().equals(key)){
-                    encontrado = true;
-                    posicionReal = posicion;
-                }
-                if (contador == table.length) {
-                    throw new InformacionInvalida();
-                }
-                if (posicion == table.length && contador < table.length) {
-                    posicion = 0;
-                }
-            }
 
-        }
-        return posicionReal;
-    }
 }
 
 
