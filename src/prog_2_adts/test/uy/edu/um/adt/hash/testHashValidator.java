@@ -37,5 +37,22 @@ public class testHashValidator {
         HashImpl<Integer,String> hash = new HashImpl<>();
         assertThrows(InformacionInvalida.class, ()->{hash.remove(null);});
     }
+    @Test
+    public void testFindPosition() throws InformacionInvalida{
+        HashImpl<String,String> hash = new HashImpl<>();
+        hash.put("Pa","H");
+        //para verificar previamente calculamos la posicion en la que deberia estar
+        //y como solo hay un elemento se debe encontrar ahí
+        assertEquals(7,hash.findPosition("Pa"));
+    }
+    @Test
+    public void testSearchT() throws InformacionInvalida {
+        HashImpl<Integer,String> hash = new HashImpl<>();
+        hash.put(1,"H");
+        hash.put(2,"L");
+        hash.put(3,"T");
+        hash.put(9,"O");
+        assertEquals("L", hash.searchT(2));
+    }
 
 }
