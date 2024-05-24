@@ -126,7 +126,89 @@ public class HashImpl<K, V> implements HashTable<K, V> {
             }
         }
     }
-
+    @Override
+    public int findPosition(K key) throws InformacionInvalida  {
+        int res = -1;
+        boolean encontrado = false;
+        if (key == null) {
+            throw new InformacionInvalida();
+        }
+        int hashCode = key.hashCode();
+        int posicion = hashCode % table.length;
+        int contador = 0;
+        if (table[posicion] == null) {
+            posicion = this.getNotNullPosition(posicion);
+            if(table[posicion].getKey() == key){
+                res = posicion;
+            }
+        }
+        if(table[posicion].getKey() == key){
+            encontrado = true;
+            res = posicion;
+        }
+        while (!encontrado) {
+            posicion = (posicion+1)% table.length;
+            contador++;
+            if (table[posicion] == null) {
+                posicion = this.getNotNullPosition(posicion);
+            }
+            if(table[posicion].getKey() == key){
+                encontrado = true;
+                res = posicion;
+            }
+            if (contador == table.length) {
+                break;
+            }
+            if (posicion == table.length && contador < table.length) {
+                posicion = 0;
+            }
+        }
+        if(res == -1){
+            throw new InformacionInvalida();
+        }
+        return res;
+    }
+    public V searchT(K key) throws InformacionInvalida{
+        V res = null;
+        boolean encontrado = false;
+        if (key == null) {
+            throw new InformacionInvalida();
+        }
+        int hashCode = key.hashCode();
+        int posicion = hashCode % table.length;
+        int contador = 0;
+        if (table[posicion] == null) {
+            posicion = this.getNotNullPosition(posicion);
+            if(table[posicion].getKey() == key){
+                res = table[posicion].getData();
+            }
+        }
+        if(table[posicion].getKey() == key){
+            encontrado = true;
+            res = table[posicion].getData();;
+        }
+        while (!encontrado) {
+            posicion = (posicion+1)% table.length;
+            contador++;
+            if (table[posicion] == null) {
+                posicion = this.getNotNullPosition(posicion);
+            }
+            if(table[posicion].getKey() == key){
+                encontrado = true;
+                res = table[posicion].getData();
+            }
+            if (contador == table.length) {
+                break;
+            }
+            if (posicion == table.length && contador < table.length) {
+                posicion = 0;
+            }
+        }
+        if(res == null){
+            throw new InformacionInvalida();
+        }
+        return res;
+    }
 
 }
 
