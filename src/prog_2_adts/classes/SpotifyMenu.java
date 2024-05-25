@@ -1,0 +1,47 @@
+package prog_2_adts.classes;
+
+import java.util.Scanner;
+
+public class SpotifyMenu {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String filePath = "dataset.csv"; // Ruta del archivo CSV
+
+        // Cargar datos desde el archivo CSV
+        //SpotifyData dataset = new SpotifyData (filePath);
+        while (true) {
+            System.out.println("Menú:");
+            System.out.println("0. Salir");
+            System.out.println("1. Top 10 canciones en un país en un día dado.");
+            System.out.println("2. Top 5 canciones que aparecen en más top 50 en un día dado.");
+            System.out.println("3. Top 7 artistas que más aparecen en los top 50 para un rango de fechas dado.");
+            System.out.println("4. Cantidad de veces que aparece un artista específico en un top 50 en una fecha dada.");
+            System.out.println("5. Cantidad de canciones con un tempo en un rango específico para un rango específico de fechas.");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+            switch (choice) {
+                case 1:
+                    //
+                    break;
+                case 2:
+                    //
+                    break;
+                case 3:
+                    //
+                    break;
+                case 4:
+                    //
+                    break;
+                case 5:
+                    //
+                    break;
+                case 0:
+                    System.out.println("Saliendo del programa...");
+                    return;
+                default:
+                    System.out.println("Opción inválida. Por favor, ingrese una opción válida.");
+            }
+        }}
+}
+
