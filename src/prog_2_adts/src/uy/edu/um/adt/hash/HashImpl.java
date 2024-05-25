@@ -56,7 +56,7 @@ public class HashImpl<K, V> implements HashTable<K, V> {
         int contador = 0;
         if (table[posicion] == null) {
             posicion = this.getNotNullPosition(posicion);
-            if(table[posicion].getKey() == key){
+            if(table[posicion].getKey().equals(key)){
                 encontrado = true;
             }
         }
@@ -69,7 +69,7 @@ public class HashImpl<K, V> implements HashTable<K, V> {
                 if (table[posicion] == null) {
                     posicion = this.getNotNullPosition(posicion);
                 }
-                if(table[posicion].getKey() == key){
+                if(table[posicion].getKey().equals(key)){
                     encontrado = true;
                 }
                 if (contador == table.length) {
@@ -100,11 +100,11 @@ public class HashImpl<K, V> implements HashTable<K, V> {
         int contador = 0;
         if (table[posicion] == null) {
             posicion = this.getNotNullPosition(posicion);
-            if(table[posicion].getKey() == key){
+            if(table[posicion].getKey().equals(key)){
                 table[posicion] = null;
             }
         }
-        if(table[posicion].getKey() == key){
+        if(table[posicion].getKey().equals(key)){
             encontrado = true;
             table[posicion] = null;
         }
@@ -114,7 +114,7 @@ public class HashImpl<K, V> implements HashTable<K, V> {
             if (table[posicion] == null) {
                 posicion = this.getNotNullPosition(posicion);
             }
-            if(table[posicion].getKey() == key){
+            if(table[posicion].getKey().equals(key)){
                 encontrado = true;
                 table[posicion] = null;
             }
@@ -138,7 +138,7 @@ public class HashImpl<K, V> implements HashTable<K, V> {
         int contador = 0;
         if (table[posicion] == null) {
             posicion = this.getNotNullPosition(posicion);
-            if(table[posicion].getKey() == key){
+            if(table[posicion].getKey().equals(key)){
                 res = posicion;
             }
         }
@@ -152,7 +152,7 @@ public class HashImpl<K, V> implements HashTable<K, V> {
             if (table[posicion] == null) {
                 posicion = this.getNotNullPosition(posicion);
             }
-            if(table[posicion].getKey() == key){
+            if(table[posicion].getKey().equals(key)){
                 encontrado = true;
                 res = posicion;
             }
@@ -179,11 +179,11 @@ public class HashImpl<K, V> implements HashTable<K, V> {
         int contador = 0;
         if (table[posicion] == null) {
             posicion = this.getNotNullPosition(posicion);
-            if(table[posicion].getKey() == key){
+            if(table[posicion].getKey().equals(key)){
                 res = table[posicion].getData();
             }
         }
-        if(table[posicion].getKey() == key){
+        if(table[posicion].getKey().equals(key)){
             encontrado = true;
             res = table[posicion].getData();
         }
@@ -193,7 +193,7 @@ public class HashImpl<K, V> implements HashTable<K, V> {
             if (table[posicion] == null) {
                 posicion = this.getNotNullPosition(posicion);
             }
-            if(table[posicion].getKey() == key){
+            if(table[posicion].getKey().equals(key)){
                 encontrado = true;
                 res = table[posicion].getData();
             }
