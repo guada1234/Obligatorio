@@ -10,11 +10,11 @@ import java.util.List;
 
 public class CSVReader {
     public static void main(String[] args) throws IOException {
-        String filePath = "../../../../Desktop/Spotify_canciones.csv";
+        String filePath = "/Users/guadaluperial/Desktop/Spotify_canciones.csv";
         try (CSVParser parser = new CSVParser(new FileReader(filePath), CSVFormat.DEFAULT)) {
             List<CSVRecord> records = parser.getRecords();
             for (CSVRecord record : records) {
-                // process each record here
+                //process each record here
                 System.out.println(String.join(",", record));
             }
         }
