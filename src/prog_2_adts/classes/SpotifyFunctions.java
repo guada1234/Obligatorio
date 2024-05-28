@@ -25,7 +25,7 @@ public class SpotifyFunctions {
         cancionesTop10 = obtenerTop10(pais, fecha);
 
         System.out.println("Top 10 canciones en " + pais + " el " + fecha + ":");
-        for (Cancion cancion : top10) {
+        for (Cancion cancion : cancionesTop10) {
             System.out.println(cancion.getPosicion() + ". " + cancion.getTitulo() + " - " + cancion.getArtista());
         }
     }
