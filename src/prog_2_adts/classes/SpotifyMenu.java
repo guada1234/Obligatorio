@@ -52,19 +52,7 @@ public class SpotifyMenu {
 
     }
 
-    public void mostrarTop10() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Ingrese el país:");
-        String pais = scanner.nextLine();
-        System.out.println("Ingrese la fecha (YYYY-MM-DD):");
-        String fecha = scanner.nextLine();
-
-        List<Cancion> top10 = SpotifyData.obtenerTop10(pais, fecha);
-
-        System.out.println("Top 10 canciones en " + pais + " el " + fecha + ":");
-        for (Cancion cancion : top10) {
-            System.out.println(cancion.getPosicion() + ". " + cancion.getTitulo() + " - " + cancion.getArtista());
-        }
+    private void mostrarTop10() {
     }
 
 }

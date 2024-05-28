@@ -7,7 +7,7 @@ import java.io.IOException;
 public class CSVReader {
 
     public static void main(String[] args) {
-        String csvFile = "/Users/guadaluperial/Desktop/Spotify_canciones.csv";
+        String csvFile = "/Users/camilapereira/Desktop/Spotify_canciones.csv";
         String line;
         String csvSplitBy = ",";
 
