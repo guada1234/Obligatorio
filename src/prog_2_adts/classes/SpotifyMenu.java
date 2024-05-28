@@ -5,10 +5,10 @@ import java.util.Scanner;
 public class SpotifyMenu {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        String filePath = "dataset.csv"; // Ruta del archivo CSV
+        String filePath = "/Users/guadaluperial/Desktop/Spotify_canciones.csv"; // Ruta del archivo CSV
 
         // Cargar datos desde el archivo CSV
-        //SpotifyData dataset = new SpotifyData (filePath);
+       // CSVReader dataset = new CSVReader (filePath);
         while (true) {
             System.out.println("Menú:");
             System.out.println("0. Salir");
