@@ -46,14 +46,11 @@ public class SpotifyMenu {
                     return;
                 default:
                     System.out.println("Opción inválida. Por favor, ingrese una opción válida.");
-            }SpotifyMenu menu = new SpotifyMenu(filePath);
-            menu.mostrarTop10();
+            }
         }
 
     }
 
-    private void mostrarTop10() {
-    }
 
 }
 

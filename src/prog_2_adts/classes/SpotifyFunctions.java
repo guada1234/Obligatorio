@@ -8,29 +8,23 @@ import java.util.List;
 import java.util.Scanner;
 
 public class SpotifyFunctions {
-    private List<Cancion> canciones;
-
-
-    public static List<Cancion> obtenerTop10(String pais, String fecha) {
-
-        return null;
-    }
+    private MyList<Cancion> canciones = new MyLinkedListImpl<>();
 
     public void mostrarTop10() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Ingrese el país:");
         String pais = scanner.nextLine();
         System.out.println("Ingrese la fecha (YYYY-MM-DD):");
-        String fecha = scanner.nextLine();
+        Date fecha = scanner.nextLine();
         MyList<Cancion> cancionesTop10 = new MyLinkedListImpl();
         cancionesTop10 = obtenerTop10(pais, fecha);
 
         System.out.println("Top 10 canciones en " + pais + " el " + fecha + ":");
-        for (Cancion cancion : cancionesTop10) {
-            System.out.println(cancion.getPosicion() + ". " + cancion.getTitulo() + " - " + cancion.getArtista());
+        for (int i = 0; i<cancionesTop10.size(); i++) {
+            System.out.println(cancionesTop10.get(i).getPosicion() + ". " + cancionesTop10.get(i).getTitulo() + " - " + cancionesTop10.get(i).getArtista());
         }
     }
-    public MyList obtenerTop10(String pais, Date fecha){
+    public MyList<Cancion> obtenerTop10(String pais, Date fecha){
 
     }
 }

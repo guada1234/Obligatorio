@@ -1,13 +1,15 @@
 package prog_2_adts.classes;
 
+import java.util.Date;
+
 public class Cancion {
     private String titulo;
     private String artista;
     private String posicion;
-    private String fecha;
+    private Date fecha;
     private int tempo;
 
-    public Cancion(String titulo, String artista, String posicion, String fecha, int tempo) {
+    public Cancion(String titulo, String artista, String posicion, Date fecha, int tempo) {
         this.titulo = titulo;
         this.artista = artista;
         this.posicion = posicion;
@@ -39,11 +41,11 @@ public class Cancion {
         this.posicion = posicion;
     }
 
-    public String getFecha() {
+    public Date getFecha() {
         return fecha;
     }
 
-    public void setFecha(String fecha) {
+    public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
 
