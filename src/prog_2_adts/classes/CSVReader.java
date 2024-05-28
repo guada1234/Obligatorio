@@ -14,7 +14,7 @@ public class CSVReader {
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             int i=0;
             while ((line = br.readLine()) != null) {
-
+//guardar en hash
                 String[] fields = line.split(csvSplitBy);
                 i++;
                 for (String field : fields) {
