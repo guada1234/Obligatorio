@@ -1,8 +1,13 @@
 package prog_2_adts.classes;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class SpotifyMenu {
+    public SpotifyMenu(String filePath) {
+
+    }
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         String filePath = "/Users/guadaluperial/Desktop/Spotify_canciones.csv"; // Ruta del archivo CSV
@@ -41,7 +46,29 @@ public class SpotifyMenu {
                     return;
                 default:
                     System.out.println("Opción inválida. Por favor, ingrese una opción válida.");
-            }
-        }}
+            }SpotifyMenu menu = new SpotifyMenu(filePath);
+            menu.mostrarTop10();
+        }
+
+    }
+
+    public void mostrarTop10() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Ingrese el país:");
+        String pais = scanner.nextLine();
+        System.out.println("Ingrese la fecha (YYYY-MM-DD):");
+        String fecha = scanner.nextLine();
+
+        List<Cancion> top10 = SpotifyData.obtenerTop10(pais, fecha);
+
+        System.out.println("Top 10 canciones en " + pais + " el " + fecha + ":");
+        for (Cancion cancion : top10) {
+            System.out.println(cancion.getPosicion() + ". " + cancion.getTitulo() + " - " + cancion.getArtista());
+        }
+    }
+
 }
+
+
+
 
