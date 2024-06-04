@@ -25,6 +25,7 @@ public class hashDate extends HashImpl<LocalDate, HashImpl<String, BinaryTree<In
         return capacity;
     }
 
+
     public HashNode<LocalDate, HashImpl<String,BinaryTree<Integer,Cancion>>>[] getTable() {
         return table;
     }

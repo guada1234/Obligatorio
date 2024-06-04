@@ -24,6 +24,10 @@ public class HashImpl<K, V> implements HashTable<K, V> {
         return capacity;
     }
 
+    public HashNode<K, V>[] getTable() {
+        return table;
+    }
+
     @Override
     public void put(K key, V value) throws InformacionInvalida {
         if (key == null) {

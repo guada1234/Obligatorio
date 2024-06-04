@@ -43,6 +43,22 @@ public class SpotifyFunctions {
         }
 
     }
+    public MyLinkedListImpl<Cancion> Top50(HashImpl<LocalDate,HashImpl<String, BinaryTree<Integer, Cancion>>> hashData) throws InformacionInvalida {
+        MyLinkedListImpl<Cancion> listaTop10 = new MyLinkedListImpl<>();
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Ingrese la fecha (YYYY-MM-DD):");
+        LocalDate fecha = LocalDate.parse(scanner.nextLine());
+        if(!hashData.contains(fecha)){
+            throw new InformacionInvalida();
+        }else {
+            int hashFecha = fecha.hashCode();
+            int posicionFecha = hashFecha % hashData.getCapacity();
+            int i;
+            for (i=0;i<hashData.searchT(fecha).getTable().length;i++){
+
+            }
+        }
+    }
 }
 
 
