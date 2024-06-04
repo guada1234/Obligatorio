@@ -7,24 +7,35 @@ public class HashImpl<K, V> implements HashTable<K, V> {
     HashNode<K, V>[] table;
 
     public HashImpl() {
-        this.capacity = 10; // Tamaño inicial de la tabla
+        this.capacity = 10; // cantidad de fechas
         this.table = new HashNode[capacity];
         this.cantidadElementos = 0;
     }
 
+    public int getCantidadElementos() {
+        return cantidadElementos;
+    }
+
+    public double getLOAD_FACTOR() {
+        return LOAD_FACTOR;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
 
     @Override
     public void put(K key, V value) throws InformacionInvalida {
-        if ((double) (cantidadElementos + 1) / capacity >= LOAD_FACTOR) {
-            resize();
-        }
         if (key == null) {
             throw new InformacionInvalida();
         }
         int hashCode = key.hashCode();
         int posicion = hashCode % table.length;
+        if(posicion>capacity){
+            resize(posicion);
+        }
         while (table[posicion] != null) {
-            posicion = (posicion+1)% table.length;
+            posicion = posicion++;
             if(posicion == table.length){
                 posicion = 0;
             }
@@ -33,8 +44,9 @@ public class HashImpl<K, V> implements HashTable<K, V> {
     }
 
 
-    private void resize() throws InformacionInvalida {
-        int newCapacity = capacity * 2;
+
+    public void resize(int nueva_capacidad) throws InformacionInvalida {
+        int newCapacity = nueva_capacidad;
         HashNode<K, V>[] newTable = new HashNode[newCapacity];
         HashNode<K, V>[] oldTable = table;
         this.table=newTable;
@@ -209,8 +221,8 @@ public class HashImpl<K, V> implements HashTable<K, V> {
         }
         return res;
     }
-
 }
+
 
 
 

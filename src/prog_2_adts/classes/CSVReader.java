@@ -23,7 +23,6 @@ public class CSVReader {
                 System.out.println("Fila" + i);
                 String[] fields = line.split(csvSplitBy);
                 System.out.println(Arrays.toString(fields));
-                System.out.println("AAAA");
                 for (int j = 0; j< fields.length; j++) {
                     System.out.println(fields[j]);
                 }
@@ -35,8 +34,7 @@ public class CSVReader {
                 String daily_rank = fields[3];
                 String daily_movement = fields[4];
                 String country = fields[6];
-                hashData.put(date,name);  //lo va agregando segun la fecha? o ponemos key como spotifyid?
-                //que tenemos que guardar y como lo ponemos en el hash?
+                hashData.put(date,name);
                 i++;
                 for (String field : fields) {
                     System.out.print(i+". "+field);

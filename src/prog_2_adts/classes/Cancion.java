@@ -5,16 +5,26 @@ import java.util.Date;
 public class Cancion {
     private String titulo;
     private String artista;
-    private String posicion;
+    private Integer posicion;
     private Date fecha;
     private int tempo;
+    private String pais;
 
-    public Cancion(String titulo, String artista, String posicion, Date fecha, int tempo) {
+    public Cancion(String titulo, String artista, Integer posicion, Date fecha, int tempo) {
         this.titulo = titulo;
         this.artista = artista;
         this.posicion = posicion;
         this.fecha = fecha;
         this.tempo = tempo;
+        this.pais = pais;
+    }
+
+    public String getPais() {
+        return pais;
+    }
+
+    public void setPais(String pais) {
+        this.pais = pais;
     }
 
     public String getTitulo() {
@@ -33,11 +43,11 @@ public class Cancion {
         this.artista = artista;
     }
 
-    public String getPosicion() {
+    public Integer getPosicion() {
         return posicion;
     }
 
-    public void setPosicion(String posicion) {
+    public void setPosicion(Integer posicion) {
         this.posicion = posicion;
     }
 
