@@ -14,5 +14,5 @@ public interface BinaryTree<K, T> {
 	void addNode(TreeNode<K, T> add) throws InvalidKey;
 
 	public void delete(K key) throws InvalidKey, EmptyTree;
-
+	public TreeNode<K,T> getMin() throws EmptyTree;
 }
