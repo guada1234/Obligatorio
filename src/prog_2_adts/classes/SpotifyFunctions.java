@@ -2,6 +2,7 @@ package prog_2_adts.classes;
 
 import prog_2_adts.src.uy.edu.um.adt.binarytree.BinaryTree;
 import prog_2_adts.src.uy.edu.um.adt.binarytree.EmptyTree;
+import prog_2_adts.src.uy.edu.um.adt.binarytree.InvalidKey;
 import prog_2_adts.src.uy.edu.um.adt.hash.HashImpl;
 import prog_2_adts.src.uy.edu.um.adt.hash.InformacionInvalida;
 import prog_2_adts.src.uy.edu.um.adt.linkedlist.MyLinkedListImpl;
@@ -12,7 +13,7 @@ import java.util.Scanner;
 
 public class SpotifyFunctions {
     private MyList<Cancion> canciones = new MyLinkedListImpl<>();
-    public MyLinkedListImpl<Cancion> Top10(HashImpl<LocalDate,HashImpl<String, BinaryTree<Integer, Cancion>>> hashData) throws InformacionInvalida, EmptyTree {
+    public MyLinkedListImpl<Cancion> Top10(HashImpl<LocalDate,HashImpl<String, BinaryTree<Integer, Cancion>>> hashData) throws InformacionInvalida, EmptyTree, InvalidKey {
         MyLinkedListImpl<Cancion> listaTop10 = new MyLinkedListImpl<>();
         Scanner scanner = new Scanner(System.in);
         System.out.println("Ingrese el país:");
@@ -34,6 +35,8 @@ public class SpotifyFunctions {
                 while(contador <= 10){
                     contador ++;
                     listaTop10.add(binaryTree.getMin().getData());
+                    int min = binaryTree.getMin().getKey();
+                    binaryTree.delete(min);
                 }
                 return listaTop10;
             }

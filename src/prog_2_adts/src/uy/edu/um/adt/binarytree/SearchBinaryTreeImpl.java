@@ -7,9 +7,6 @@ import prog_2_adts.src.uy.edu.um.adt.linkedlist.MyLinkedListImpl;
 import prog_2_adts.src.uy.edu.um.adt.queue.EmptyQueueException;
 import prog_2_adts.src.uy.edu.um.adt.queue.MyQueue;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class SearchBinaryTreeImpl<K,T> implements BinaryTree<K,T> {
 	private TreeNode<K,T> root;
 
@@ -184,5 +181,6 @@ public class SearchBinaryTreeImpl<K,T> implements BinaryTree<K,T> {
 			throw new EmptyTree();
 		}
 	}
+
 
 }
