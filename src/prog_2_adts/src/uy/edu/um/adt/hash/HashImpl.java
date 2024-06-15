@@ -6,8 +6,8 @@ public class HashImpl<K, V> implements HashTable<K, V> {
     private int capacity;
     HashNode<K, V>[] table;
 
-    public HashImpl() {
-        this.capacity = 10; // cantidad de fechas
+    public HashImpl(int capacity) {
+        this.capacity = capacity; // cantidad de fechas
         this.table = new HashNode[capacity];
         this.cantidadElementos = 0;
     }
@@ -31,9 +31,9 @@ public class HashImpl<K, V> implements HashTable<K, V> {
     @Override
     public void put(K key, V value) throws InformacionInvalida {
         if (key == null) {
-            throw new InformacionInvalida();
+            throw new InformacionInvalida("");
         }
-        int hashCode = key.hashCode();
+        int hashCode = Math.abs(key.hashCode());
         int posicion = hashCode % table.length;
         if(posicion>capacity){
             resize(posicion);
@@ -54,8 +54,11 @@ public class HashImpl<K, V> implements HashTable<K, V> {
         HashNode<K, V>[] newTable = new HashNode[newCapacity];
         HashNode<K, V>[] oldTable = table;
         this.table=newTable;
+        this.cantidadElementos = 0;
         for (int i = 0; i < oldTable.length; i++) {
-            put(oldTable[i].getKey(), oldTable[i].getData());
+            if(oldTable[i]!=null) {
+                put(oldTable[i].getKey(), oldTable[i].getData());
+            }
         }
         capacity = newCapacity;
     }
@@ -64,9 +67,9 @@ public class HashImpl<K, V> implements HashTable<K, V> {
     @Override
     public boolean contains(K key) throws InformacionInvalida {
         if (key == null) {
-            throw new InformacionInvalida();
+            throw new InformacionInvalida("");
         }
-        int hashCode = key.hashCode();
+        int hashCode = Math.abs(key.hashCode());
         int posicion = hashCode % table.length;
         boolean encontrado = false;
         int contador = 0;
@@ -108,9 +111,9 @@ public class HashImpl<K, V> implements HashTable<K, V> {
     @Override
     public void remove(K key) throws InformacionInvalida  {
         if (key == null) {
-            throw new InformacionInvalida();
+            throw new InformacionInvalida("");
         }
-        int hashCode = key.hashCode();
+        int hashCode = Math.abs(key.hashCode());
         int posicion = hashCode % table.length;
         boolean encontrado = false;
         int contador = 0;
@@ -147,7 +150,7 @@ public class HashImpl<K, V> implements HashTable<K, V> {
         int res = -1;
         boolean encontrado = false;
         if (key == null) {
-            throw new InformacionInvalida();
+            throw new InformacionInvalida("");
         }
         int hashCode = key.hashCode();
         int posicion = hashCode % table.length;
@@ -180,7 +183,7 @@ public class HashImpl<K, V> implements HashTable<K, V> {
             }
         }
         if(res == -1){
-            throw new InformacionInvalida();
+            throw new InformacionInvalida("");
         }
         return res;
     }
@@ -188,7 +191,7 @@ public class HashImpl<K, V> implements HashTable<K, V> {
         V res = null;
         boolean encontrado = false;
         if (key == null) {
-            throw new InformacionInvalida();
+            throw new InformacionInvalida("");
         }
         int hashCode = key.hashCode();
         int posicion = hashCode % table.length;
@@ -221,10 +224,18 @@ public class HashImpl<K, V> implements HashTable<K, V> {
             }
         }
         if(res == null){
-            throw new InformacionInvalida();
+            throw new InformacionInvalida("");
         }
         return res;
     }
+    public V getData(int position) throws InformacionInvalida {
+        if(position>this.capacity){
+            throw new InformacionInvalida("");
+        }
+        return this.table[position].getData();
+    }
+
+
 }
 
 

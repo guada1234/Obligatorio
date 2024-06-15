@@ -7,11 +7,11 @@ import prog_2_adts.src.uy.edu.um.adt.binarytree.SearchBinaryTreeImpl;
 
 import java.time.LocalDate;
 
-public class hashDate extends HashImpl<LocalDate, HashImpl<String, BinaryTree<Integer,Cancion>>> {
+public class hashDate extends HashImpl<LocalDate, HashImpl<String, SearchBinaryTreeImpl<Integer,Cancion>>> {
     private int cantidadElementos=0;
     private double LOAD_FACTOR = 0.77;
     private int capacity;
-    HashNode<LocalDate,  HashImpl<String, BinaryTree<Integer,Cancion>>>[] table;
+    HashNode<LocalDate,  HashImpl<String, SearchBinaryTreeImpl<Integer,Cancion>>>[] table;
 
     public int getCantidadElementos() {
         return cantidadElementos;
@@ -26,28 +26,30 @@ public class hashDate extends HashImpl<LocalDate, HashImpl<String, BinaryTree<In
     }
 
 
-    public HashNode<LocalDate, HashImpl<String,BinaryTree<Integer,Cancion>>>[] getTable() {
+    public HashNode<LocalDate, HashImpl<String,SearchBinaryTreeImpl<Integer,Cancion>>>[] getTable() {
         return table;
     }
 
-    public hashDate(int cantidadElementos, double LOAD_FACTOR, int capacity) {
-        this.cantidadElementos = cantidadElementos;
-        this.LOAD_FACTOR = LOAD_FACTOR;
-        this.capacity = capacity;
+    public hashDate(int capacity, int capacity1) {
+        super(capacity);
+        this.cantidadElementos = 0;
+        this.LOAD_FACTOR = 0.77;
+        this.capacity = capacity1;
+        this.table =  (HashNode<LocalDate, HashImpl<String, SearchBinaryTreeImpl<Integer, Cancion>>>[]) new HashNode[capacity1];
     }
 
-    public void putPais(LocalDate key, Cancion cancion) throws InformacionInvalida, InvalidKey {
+    public void putPais(LocalDate key, Cancion cancion, int capacity) throws InformacionInvalida, InvalidKey {
         if (key == null) {
-            throw new InformacionInvalida();
+            throw new InformacionInvalida("");
         }
-        int hashCode = key.hashCode();
+        int hashCode = Math.abs(key.hashCode());
         int posicion = hashCode % table.length;
         if(posicion > table.length){
             resize(posicion); 
         }
         if(table[posicion] == null){
             BinaryTree<Integer, Cancion> binaryTree = new SearchBinaryTreeImpl<>();
-            HashImpl<String,BinaryTree<Integer, Cancion>> hashPais = new HashImpl<>();
+            HashImpl<String,BinaryTree<Integer, Cancion>> hashPais = new HashImpl<>(capacity);
             binaryTree.add(cancion.getPosicion(),cancion);
             hashPais.put(cancion.getPais(),binaryTree);
         } else if (table[posicion].getKey().equals(key)){

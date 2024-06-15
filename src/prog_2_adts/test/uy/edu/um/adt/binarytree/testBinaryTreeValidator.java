@@ -1,12 +1,10 @@
 package prog_2_adts.test.uy.edu.um.adt.binarytree;
 
 import org.junit.jupiter.api.Test;
-import prog_2_adts.src.uy.edu.um.adt.binarytree.EmptyTree;
-import prog_2_adts.src.uy.edu.um.adt.binarytree.InvalidKey;
-import prog_2_adts.src.uy.edu.um.adt.binarytree.SearchBinaryTreeImpl;
-import prog_2_adts.src.uy.edu.um.adt.binarytree.TreeNode;
+import prog_2_adts.src.uy.edu.um.adt.binarytree.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class testBinaryTreeValidator {
 
@@ -41,9 +39,28 @@ public class testBinaryTreeValidator {
         binaryTree.addNode(node4);
         binaryTree.addNode(node5);
         binaryTree.delete(4);
-        binaryTree.delete(node1.getKey());
+        binaryTree.delete(1);
         assertThrows(InvalidKey.class, ()->{binaryTree.serch(4);});
+        //assertThrows(InvalidKey.class, ()->{binaryTree.serch(1);});
     }
+    @Test
+    public void testDeleteRoot() {
+        BinaryTree<Integer, String> binaryTree = new SearchBinaryTreeImpl<>();
+        try {
+            binaryTree.add(3, "A");
+            binaryTree.add(5, "B");
+            binaryTree.add(2, "C");
+        } catch (InvalidKey e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            binaryTree.delete(3);
+        } catch (InvalidKey | EmptyTree e) {
+            throw new RuntimeException(e);
+        }
+            assertThrows(InvalidKey.class, () -> {binaryTree.serch(3);});
+    }
+
     @Test
     public void testGetMin() throws InvalidKey, EmptyTree {
         SearchBinaryTreeImpl<Integer,String> binaryTree = new SearchBinaryTreeImpl<Integer,String>();
@@ -60,7 +77,7 @@ public class testBinaryTreeValidator {
         assertEquals(1,binaryTree.getMin().getKey());
         binaryTree.delete(1);
         assertThrows(InvalidKey.class, ()->{binaryTree.serch(1);});
-       // assertEquals(4,binaryTree.getMin().getKey());
+        assertEquals(4,binaryTree.getMin().getKey());
     }
 
 

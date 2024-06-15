@@ -7,12 +7,17 @@ import prog_2_adts.src.uy.edu.um.adt.linkedlist.MyLinkedListImpl;
 import prog_2_adts.src.uy.edu.um.adt.queue.EmptyQueueException;
 import prog_2_adts.src.uy.edu.um.adt.queue.MyQueue;
 
-public class SearchBinaryTreeImpl<K,T> implements BinaryTree<K,T> {
+public class SearchBinaryTreeImpl<K extends Comparable<K>, T> implements BinaryTree<K , T>{
 	private TreeNode<K,T> root;
 
 	public TreeNode<K,T> getRoot(){
 		return this.root;
 	}
+	@Override
+	public int size(){
+		return root.size(root);
+	}
+
 
 	@Override
 	public T serch(K key) throws EmptyTree, InvalidKey {
@@ -67,44 +72,105 @@ public class SearchBinaryTreeImpl<K,T> implements BinaryTree<K,T> {
 	}
 
 	@Override
-	public void delete(K key) throws InvalidKey, EmptyTree{
-		if (this.root != null) {
-			TreeNode<K,T> del = this.serchNode(key);
-			TreeNode<K,T> parent = this.root.findParent(key);
-			if (parent.getLeftChild() == del) {
+	public void delete(K key) throws EmptyTree, InvalidKey {
+		TreeNode<K, T> nodeToDelete = findNode(root, key);
+		if (nodeToDelete == null) {
+			throw new InvalidKey();
+		}
+
+		// Caso 1: El nodo a eliminar es una hoja (no tiene hijos)
+		if (nodeToDelete.getLeftChild() == null && nodeToDelete.getRightChild() == null) {
+			removeNode(nodeToDelete);
+			return;
+		}
+
+		// Caso 2: El nodo a eliminar tiene un hijo izquierdo
+		if (nodeToDelete.getLeftChild() != null && nodeToDelete.getRightChild() == null) {
+			replaceNode(nodeToDelete, nodeToDelete.getLeftChild());
+			return;
+		}
+
+		// Caso 3: El nodo a eliminar tiene un hijo derecho
+		if (nodeToDelete.getLeftChild() == null && nodeToDelete.getRightChild() != null) {
+			replaceNode(nodeToDelete, nodeToDelete.getRightChild());
+			return;
+		}
+
+		// Caso 4: El nodo a eliminar tiene dos hijos
+		TreeNode<K, T> successor = findSuccessor(nodeToDelete);
+		replaceNode(nodeToDelete, successor);
+	}
+
+	// Método auxiliar para encontrar el nodo que se va a eliminar
+	private TreeNode<K, T> findNode(TreeNode<K, T> node, K key) {
+		if (node == null) {
+			return null;
+		}
+		if (node.getKey().compareTo(key) == 0) {
+			return node;
+		}
+		TreeNode<K, T> left = findNode(node.getLeftChild(), key);
+		if (left != null) {
+			return left;
+		}
+		return findNode(node.getRightChild(), key);
+	}
+
+	// Método auxiliar para eliminar un nodo del árbol
+	private void removeNode(TreeNode<K, T> node) {
+		if (node == root) {
+			root = null;
+		} else {
+			TreeNode<K, T> parent = findParent(node);
+			if (parent.getLeftChild() == node) {
 				parent.setLeftChild(null);
 			} else {
 				parent.setRightChild(null);
 			}
-			MyLinkedListImpl<TreeNode<K,T>> list = new MyLinkedListImpl<TreeNode<K,T>>();
-			del.getChildList(list);
-			list.remove(list.get(0));
-			for (int i = 0; i < list.size(); i ++) {
-				list.get(i).setRightChild(null);
-				list.get(i).setLeftChild(null);
-				this.addNode(list.get(i));
-			}
-		} else {
-			throw new EmptyTree();
 		}
 	}
 
-	public void inOrder() throws EmptyTree {
-		MyLinkedListImpl<T> list = new MyLinkedListImpl<>();
-		if (this.root != null) {
-			this.root.inOrder(list);
+	// Método auxiliar para reemplazar un nodo con otro
+	private void replaceNode(TreeNode<K, T> node, TreeNode<K, T> newNode) {
+		if (node == root) {
+			root = newNode;
 		} else {
-			throw new EmptyTree();
-		}
-
-		for (int i = 0; i < list.size(); i++) {
-			if (list.get(i) == this.root.getData()) {
-				System.out.println(list.get(i) + " [R]");
+			TreeNode<K, T> parent = findParent(node);
+			if (parent.getLeftChild() == node) {
+				parent.setLeftChild(newNode);
 			} else {
-				System.out.println(list.get(i));
+				parent.setRightChild(newNode);
 			}
 		}
 	}
+
+	// Método auxiliar para encontrar el padre de un nodo
+	private TreeNode<K, T> findParent(TreeNode<K, T> node) {
+		if (node == root) {
+			return null;
+		}
+		TreeNode<K, T> parent = root;
+		while (true) {
+			if (parent.getLeftChild() == node || parent.getRightChild() == node) {
+				return parent;
+			}
+			if (parent.getKey().compareTo(node.getKey()) < 0) {
+				parent = parent.getRightChild();
+			} else {
+				parent = parent.getLeftChild();
+			}
+		}
+	}
+
+	// Método auxiliar para encontrar el sucesor de un nodo
+	private TreeNode<K, T> findSuccessor(TreeNode<K, T> node) {
+		TreeNode<K, T> successor = node.getRightChild();
+		while (successor.getLeftChild() != null) {
+			successor = successor.getLeftChild();
+		}
+		return successor;
+	}
+
 	public void preOrder() throws EmptyTree {
 		MyLinkedListImpl<T> list = new MyLinkedListImpl<>();
 		if (this.root != null) {
@@ -171,6 +237,9 @@ public class SearchBinaryTreeImpl<K,T> implements BinaryTree<K,T> {
 		}
 		return minimum;
 	}
+
+
+
 
 	public void levelRouting() throws EmptyTree, EmptyQueueException {
 		if (this.root != null) {

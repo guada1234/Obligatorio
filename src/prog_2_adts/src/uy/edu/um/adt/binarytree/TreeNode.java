@@ -7,10 +7,6 @@ import prog_2_adts.src.uy.edu.um.adt.linkedlist.MyLinkedListImpl;
 import prog_2_adts.src.uy.edu.um.adt.queue.EmptyQueueException;
 import prog_2_adts.src.uy.edu.um.adt.queue.MyQueue;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 /**
  * @author pegardan
  *
@@ -24,6 +20,15 @@ public class TreeNode<K,T> implements Comparable<K>{
 		this.data = data;
 		this.key = key;
 	}
+
+	public void setData(T data) {
+		this.data = data;
+	}
+
+	public void setKey(K key) {
+		this.key = key;
+	}
+
 	@Override
 	public int compareTo(K otherKey) {
 		return (int)(this.key) - (int)(otherKey);
@@ -52,12 +57,12 @@ public class TreeNode<K,T> implements Comparable<K>{
 			res = this;
 		} else {
 			if (this.compareTo(key) > 0) {
-				if (this.leftChild != null) {
-					res = this.leftChild.findNode(key);
-				}
-			} else {
 				if (this.rightChild != null) {
 					res = this.rightChild.findNode(key);
+				}
+			} else {
+				if (this.leftChild != null) {
+					res = this.leftChild.findNode(key);
 				}
 			}
 		}
@@ -169,6 +174,31 @@ public class TreeNode<K,T> implements Comparable<K>{
 		}
 
 	}
+	public <K extends Comparable<K>> T findNode(TreeNode<K,T> raiz, K key) {
+		T res = null;
+		//caso base
+		if(raiz == null){
+			return res;
+		}
+		if (raiz.getKey() == key){
+			res = raiz.getData();
+			return res;
+		} else if (raiz.getKey().compareTo(key) < 0 && raiz.getLeftChild() != null) {
+			raiz = raiz.getLeftChild();
+			findNode(raiz,key);
+		} else if (raiz.getKey().compareTo(key) > 0 && raiz.getRightChild() != null) {
+			raiz = raiz.getRightChild();
+			findNode(raiz,key);
+		}
+		return res;
+	}
+	public int size(TreeNode<K,T> raiz){
+		if (raiz == null){
+			return 0;
+		}
+		return (1 + size(raiz.getLeftChild()) + size(raiz.getRightChild()));
+	}
+
 }
 
 
