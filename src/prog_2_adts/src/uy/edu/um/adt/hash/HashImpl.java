@@ -1,242 +1,132 @@
 package prog_2_adts.src.uy.edu.um.adt.hash;
 
-public class HashImpl<K, V> implements HashTable<K, V> {
-    private int cantidadElementos;
-    private double LOAD_FACTOR = 0.77;
-    private int capacity;
-    HashNode<K, V>[] table;
+public class HashImpl<K,V> implements HashTable<K,V> {
+    private int size;
+    private int has;
+    private HashNode<K,V>[] list;
 
-    public HashImpl(int capacity) {
-        this.capacity = capacity; // cantidad de fechas
-        this.table = new HashNode[capacity];
-        this.cantidadElementos = 0;
+    public HashImpl(int size) {
+        this.size = size;
+        this.list = (HashNode<K,V>[]) new HashNode<?,?>[size];
+        this.has = 0;
     }
 
-    public int getCantidadElementos() {
-        return cantidadElementos;
+    public HashNode<K,V>[] getList() {
+        return list;
     }
 
-    public double getLOAD_FACTOR() {
-        return LOAD_FACTOR;
+    public int getHas() {
+        return has;
     }
 
-    public int getCapacity() {
-        return capacity;
+    public void setHas(int has) {
+        this.has = has;
     }
 
-    public HashNode<K, V>[] getTable() {
-        return table;
+    public void addHas() {
+        this.setHas(has+1);
     }
 
-    @Override
-    public void put(K key, V value) throws InformacionInvalida {
-        if (key == null) {
-            throw new InformacionInvalida("");
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public void setList(HashNode<K,V>[] list) {
+        this.list = list;
+    }
+
+
+    public void add(K value,V data) {
+        HashNode<K,V> nodo= new HashNode<K,V>(value, data);
+        int hashcode = value.hashCode();
+        int hc = (Math.abs(hashcode))%size;
+        if (list[hc] == null) {
+            list[hc] = nodo;
+            this.addHas();
         }
-        int hashCode = Math.abs(key.hashCode());
-        int posicion = hashCode % table.length;
-        if(posicion>capacity){
-            resize(posicion);
-        }
-        while (table[posicion] != null) {
-            posicion = posicion++;
-            if(posicion == table.length){
-                posicion = 0;
+        else{
+            if(this.getHas()==this.getSize()){
+                this.resize(this.size*2);
+                System.out.println("Se agrando el hash a tamano "+ this.size+" porque no habia suficiente esapcio.");
+                list[size/2] = nodo;
+                this.addHas();
             }
-        }
-        table[posicion] = new HashNode<>(key, value);
-    }
-
-
-
-    public void resize(int nueva_capacidad) throws InformacionInvalida {
-        int newCapacity = nueva_capacidad;
-        HashNode<K, V>[] newTable = new HashNode[newCapacity];
-        HashNode<K, V>[] oldTable = table;
-        this.table=newTable;
-        this.cantidadElementos = 0;
-        for (int i = 0; i < oldTable.length; i++) {
-            if(oldTable[i]!=null) {
-                put(oldTable[i].getKey(), oldTable[i].getData());
-            }
-        }
-        capacity = newCapacity;
-    }
-
-
-    @Override
-    public boolean contains(K key) throws InformacionInvalida {
-        if (key == null) {
-            throw new InformacionInvalida("");
-        }
-        int hashCode = Math.abs(key.hashCode());
-        int posicion = hashCode % table.length;
-        boolean encontrado = false;
-        int contador = 0;
-        if (table[posicion] == null) {
-            posicion = this.getNotNullPosition(posicion);
-            if(table[posicion].getKey().equals(key)){
-                encontrado = true;
-            }
-        }
-        if(table[posicion].getKey() == key){
-            encontrado = true;
-        }
-            while (!encontrado) {
-                posicion = (posicion+1)% table.length;
-                contador++;
-                if (table[posicion] == null) {
-                    posicion = this.getNotNullPosition(posicion);
+            else{
+                if(this.search(value)>=0){
+                    System.out.println("El valor ya existe en el hash");
                 }
-                if(table[posicion].getKey().equals(key)){
-                    encontrado = true;
-                }
-                if (contador == table.length) {
-                    break;
-                }
-                if (posicion == table.length && contador < table.length) {
-                    posicion = 0;
+                else{
+                    while (this.list[hc%size] != null) {
+                        hc++;
+                    }
+                    this.list[hc%size] = nodo;
+                    this.addHas();
                 }
             }
-        return encontrado;
+        }
     }
 
-    public int getNotNullPosition(int posicion) {
-        while (table[posicion]==null) {
-            posicion = (posicion+1)% table.length;
+    public void resize(int newSize) {
+        int min= 0;
+        if (newSize < size) {
+            System.out.println("Valores se van a perder");
+            min= newSize;
         }
-        return posicion;
+        else{
+            min= size;
+        }
+        HashNode<K,V>[] newList = new HashNode[newSize];
+        for (int i = 0; i < min; i++) {
+            newList[i] = list[i];
+        }
+        this.setSize(newSize);
+        this.setList(newList);
     }
 
-    @Override
-    public void remove(K key) throws InformacionInvalida  {
-        if (key == null) {
-            throw new InformacionInvalida("");
+    public int search(K value) {
+        int posicion = Math.abs(value.hashCode()) % size;
+        int n = 0;
+
+        while (list[(posicion + n) % size] != null && !list[(posicion + n) % size].getValue().equals(value) && n < this.size) {
+            n++;
         }
-        int hashCode = Math.abs(key.hashCode());
-        int posicion = hashCode % table.length;
-        boolean encontrado = false;
-        int contador = 0;
-        if (table[posicion] == null) {
-            posicion = this.getNotNullPosition(posicion);
-            if(table[posicion].getKey().equals(key)){
-                table[posicion] = null;
-            }
-        }
-        if(table[posicion].getKey().equals(key)){
-            encontrado = true;
-            table[posicion] = null;
-        }
-        while (!encontrado) {
-            posicion = (posicion+1)% table.length;
-            contador++;
-            if (table[posicion] == null) {
-                posicion = this.getNotNullPosition(posicion);
-            }
-            if(table[posicion].getKey().equals(key)){
-                encontrado = true;
-                table[posicion] = null;
-            }
-            if (contador == table.length) {
-                break;
-            }
-            if (posicion == table.length && contador < table.length) {
-                posicion = 0;
-            }
+
+        if (n == this.size || list[(posicion + n) % size] == null) {
+            return -1;  // Devuelve -1 para indicar que el valor no fue encontrado
+        } else {
+            return (posicion + n) % size;  // Devuelve la posición donde se encontró el valor
         }
     }
-    @Override
-    public int findPosition(K key) throws InformacionInvalida  {
-        int res = -1;
-        boolean encontrado = false;
-        if (key == null) {
+
+    public void delete(int position)throws InformacionInvalida {
+        if(position>this.size||position<0){
             throw new InformacionInvalida("");
         }
-        int hashCode = key.hashCode();
-        int posicion = hashCode % table.length;
-        int contador = 0;
-        if (table[posicion] == null) {
-            posicion = this.getNotNullPosition(posicion);
-            if(table[posicion].getKey().equals(key)){
-                res = posicion;
-            }
-        }
-        if(table[posicion].getKey() == key){
-            encontrado = true;
-            res = posicion;
-        }
-        while (!encontrado) {
-            posicion = (posicion+1)% table.length;
-            contador++;
-            if (table[posicion] == null) {
-                posicion = this.getNotNullPosition(posicion);
-            }
-            if(table[posicion].getKey().equals(key)){
-                encontrado = true;
-                res = posicion;
-            }
-            if (contador == table.length) {
-                break;
-            }
-            if (posicion == table.length && contador < table.length) {
-                posicion = 0;
-            }
-        }
-        if(res == -1){
-            throw new InformacionInvalida("");
-        }
-        return res;
+        this.list[position] = null;
+        this.setHas(has-1);
     }
-    public V searchT(K key) throws InformacionInvalida{
-        V res = null;
-        boolean encontrado = false;
-        if (key == null) {
-            throw new InformacionInvalida("");
-        }
-        int hashCode = key.hashCode();
-        int posicion = hashCode % table.length;
-        int contador = 0;
-        if (table[posicion] == null) {
-            posicion = this.getNotNullPosition(posicion);
-            if(table[posicion].getKey().equals(key)){
-                res = table[posicion].getData();
-            }
-        }
-        if(table[posicion].getKey().equals(key)){
-            encontrado = true;
-            res = table[posicion].getData();
-        }
-        while (!encontrado) {
-            posicion = (posicion+1)% table.length;
-            contador++;
-            if (table[posicion] == null) {
-                posicion = this.getNotNullPosition(posicion);
-            }
-            if(table[posicion].getKey().equals(key)){
-                encontrado = true;
-                res = table[posicion].getData();
-            }
-            if (contador == table.length) {
-                break;
-            }
-            if (posicion == table.length && contador < table.length) {
-                posicion = 0;
-            }
-        }
-        if(res == null){
-            throw new InformacionInvalida("");
-        }
-        return res;
-    }
+
     public V getData(int position) throws InformacionInvalida {
-        if(position>this.capacity){
+        if(position>this.size){
             throw new InformacionInvalida("");
         }
-        return this.table[position].getData();
+        return this.list[position].getData();
     }
 
-
+    public HashNode<K, V> getNode(int position) throws InformacionInvalida {
+        if(position>this.size){
+            throw new InformacionInvalida("");
+        }
+        return this.list[position];
+    }
 }
+
+
+
 
 
 

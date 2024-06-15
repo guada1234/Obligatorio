@@ -1,27 +1,34 @@
 package prog_2_adts.src.uy.edu.um.adt.hash;
 
-public class HashNode<K,T> {
-    K key;
-    T data;
-
-    public HashNode(K key, T data) {
-        this.key = key;
+import java.util.Objects;
+public class HashNode<K,V>{
+    private K value;
+    private V data;
+    public K getValue() {
+        return value;
+    }
+    public void setValue(K value) {
+        this.value = value;
+    }
+    public HashNode(K value, V data) {
+        this.value = value;
         this.data = data;
     }
+    public V getData() {return data;}
+    public void setData(V data) {this.data = data;}
 
-    public K getKey() {
-        return key;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HashNode<?, ?> hashNode = (HashNode<?, ?>) o;
+        return Objects.equals(value, hashNode.value);
     }
 
-    public void setKey(K key) {
-        this.key = key;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(value);
     }
 }
+
+
