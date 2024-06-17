@@ -3,17 +3,18 @@ package prog_2_adts.src.uy.edu.um.adt.BinaryTree2;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyBinarySearchTreeImpl<T extends Comparable<T>,K> implements MyBinarySearchTree<T,K> {
-    private TreeNode<T,K> root;
-    public TreeNode<T,K> getRoot() {
+public class MyBinarySearchTreeImpl<k extends Comparable<k>, T> implements MyBinarySearchTree<k, T> {
+    private TreeNode<k, T> root;
+    public TreeNode<k, T> getRoot() {
         return root;
     }
-    public void setRoot(TreeNode<T,K> root) {
+    public void setRoot(TreeNode<k, T> root) {
         this.root = root;
     }
 
-    public void add(T oElement, K value) {
-        TreeNode<T,K> oElementToAdd = new TreeNode<T,K>(oElement, value);
+
+    public void add(k oElement, T value) {
+        TreeNode<k, T> oElementToAdd = new TreeNode<k, T>(oElement, value);
         if (root == null) {
             root = oElementToAdd;
         }
@@ -22,11 +23,11 @@ public class MyBinarySearchTreeImpl<T extends Comparable<T>,K> implements MyBina
         }
     }
 
-    public boolean contains(T oElement) {
+    public boolean contains(k oElement) {
         return contains(oElement, root);
     }
 
-    private boolean contains(T oElementToSearch, TreeNode<T,K> oTree) {
+    private boolean contains(k oElementToSearch, TreeNode<k, T> oTree) {
         boolean bContains = false;
         if (oTree != null) {
             int nValue = oElementToSearch.compareTo(oTree.getKey());
@@ -43,22 +44,22 @@ public class MyBinarySearchTreeImpl<T extends Comparable<T>,K> implements MyBina
         return bContains;
     }
 
-    public void remove(T oElement) {
+    public void remove(k oElement) {
         if (root != null) {
             root.remove(oElement);
         }
     }
 
-    public T find(T oElement) {
+    public T find(k oElement) {
         return find(oElement, root);
     }
 
-    private T find(T oElementToSearch, TreeNode<T,K> oTree) {
+    private T find(k oElementToSearch, TreeNode<k, T> oTree) {
         T oSearchedElement = null;
         if (oTree != null) {
             int nValue = oElementToSearch.compareTo(oTree.getKey());
             if (nValue == 0) {
-                oSearchedElement = oTree.getKey();
+                oSearchedElement = oTree.getValue();
             }
             else if (nValue > 0) {
                 oSearchedElement = find(oElementToSearch, oTree.getRight());
@@ -70,55 +71,82 @@ public class MyBinarySearchTreeImpl<T extends Comparable<T>,K> implements MyBina
         return oSearchedElement;
     }
 
-    public List<T> preOrder() {
-        List<T> colValues = new ArrayList<T>();
+    public TreeNode findNodeAtPosition(int position) {
+        int[] currentPos = {0}; // Variable auxiliar para llevar la cuenta de la posición actual
+        return findNodeAtPositionRec(root, position, currentPos);
+    }
+
+    public TreeNode findNodeAtPositionRec(TreeNode node, int position, int[] currentPos) {
+        if (node == null) {
+            return null;
+        }
+
+        // Buscar en el subárbol izquierdo
+        TreeNode left = findNodeAtPositionRec(node.getLeft() , position, currentPos);
+        if (left != null) {
+            return left;
+        }
+
+        // Verificar la posición actual
+        if (currentPos[0] == position) {
+            return node;
+        }
+        currentPos[0]++;
+
+        // Buscar en el subárbol derecho
+        return findNodeAtPositionRec(node.getRight(), position, currentPos);
+    }
+
+
+    public List<k> preOrder() {
+        List<k> colValues = new ArrayList<k>();
         if (root != null) {
             colValues.addAll(root.preOrderTraverse());
         }
         return colValues;
     }
 
-    public List<T> postOrder() {
-        List<T> colValues = new ArrayList<T>();
+    public List<k> postOrder() {
+        List<k> colValues = new ArrayList<k>();
         if (root != null) {
             colValues.addAll(root.postOrderTraverse());
         }
         return colValues;
     }
 
-    public List<T> inOrder() {
-        List<T> colValues = new ArrayList<T>();
+    public List<k> inOrder() {
+        List<k> colValues = new ArrayList<k>();
         if (root != null) {
             colValues.addAll(root.inOrderTraverse());
         }
         return colValues;
     }
 
-    public List<K> preOrderV() {
-        List<K> colValues = new ArrayList<K>();
+    public List<T> preOrderV() {
+        List<T> colValues = new ArrayList<T>();
         if (root != null) {
             colValues.addAll(root.preOrderTraverseV());
         }
         return colValues;
     }
 
-    public List<K> postOrderV() {
-        List<K> colValues = new ArrayList<K>();
+    public List<T> postOrderV() {
+        List<T> colValues = new ArrayList<T>();
         if (root != null) {
             colValues.addAll(root.postOrderTraverseV());
         }
         return colValues;
     }
 
-    public List<K> inOrderV() {
-        List<K> colValues = new ArrayList<K>();
+    public List<T> inOrderV() {
+        List<T> colValues = new ArrayList<T>();
         if (root != null) {
             colValues.addAll(root.inOrderTraverseV());
         }
         return colValues;
     }
 
-    public MyBinarySearchTreeImpl(TreeNode<T, K> root) {
+    public MyBinarySearchTreeImpl(TreeNode<k, T> root) {
         this.root = root;
     }
 

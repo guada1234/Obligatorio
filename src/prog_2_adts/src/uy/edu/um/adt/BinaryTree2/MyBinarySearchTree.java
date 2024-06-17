@@ -6,7 +6,7 @@ public interface MyBinarySearchTree<T extends Comparable<T>,K> {
     void add(T oElement, K value);
     void remove(T oElement);
     boolean contains(T oElement);
-    T find(T oElement);
+    K find(T oElement);
     List<T> preOrder();
     List<T> postOrder();
     List<T> inOrder();

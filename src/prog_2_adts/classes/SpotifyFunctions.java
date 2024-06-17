@@ -4,6 +4,7 @@ import prog_2_adts.src.uy.edu.um.adt.BinaryTree2.InfoIncorrecta;
 import prog_2_adts.src.uy.edu.um.adt.BinaryTree2.MyBinarySearchTreeImpl;
 import prog_2_adts.src.uy.edu.um.adt.BinaryTree2.TreeNode;
 import prog_2_adts.src.uy.edu.um.adt.hash.HashImpl;
+import prog_2_adts.src.uy.edu.um.adt.hash.HashNode;
 import prog_2_adts.src.uy.edu.um.adt.hash.InformacionInvalida;
 import prog_2_adts.src.uy.edu.um.adt.linkedlist.MyLinkedListImpl;
 import prog_2_adts.src.uy.edu.um.adt.linkedlist.MyList;
@@ -14,13 +15,17 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Scanner;
 
 public class SpotifyFunctions {
 
-    private HashImpl<LocalDate, HashImpl<String, MyBinarySearchTreeImpl<Integer, Song>>> spotify = new HashImpl<>(210); //hash master con tamano que me dio en test
+    private HashImpl<LocalDate, HashImpl<String, MyBinarySearchTreeImpl<Integer, Song>>> spotify = new HashImpl<>(210);
 
+    public HashImpl<LocalDate, HashImpl<String, MyBinarySearchTreeImpl<Integer, Song>>> getSpotify() {
+        return spotify;
+    }
 
-    public void agregarDatos(String spotifyId, String name, MyList<Artist> artists, int dailyRank, int dailyMovement, int weeklyMovement, String country, LocalDate snapshotDate, int popularity, boolean isExplicit, int durationMs, String albumName, String albumReleaseDate, float danceability, float energy, int key, float loudness, int mode, float speechiness, float acousticness, float instrumentalness, float liveness, float valence, float tempo, int timeSignature) throws InfoIncorrecta, InformacionInvalida {
+    public void addInfoHash(String spotifyId, String name, MyList<Artist> artists, int dailyRank, int dailyMovement, int weeklyMovement, String country, LocalDate snapshotDate, int popularity, boolean isExplicit, int durationMs, String albumName, String albumReleaseDate, float danceability, float energy, int key, float loudness, int mode, float speechiness, float acousticness, float instrumentalness, float liveness, float valence, float tempo, int timeSignature) throws InfoIncorrecta, InformacionInvalida {
         int posicion1 = this.spotify.search(snapshotDate);
         if (posicion1 != -1) {
             HashImpl<String, MyBinarySearchTreeImpl<Integer, Song>> hash2 = this.spotify.getData(posicion1);
@@ -40,7 +45,7 @@ public class SpotifyFunctions {
         }}
 
 
-    public void processCVS() throws InformacionInvalida {
+    public void readCVS() throws InformacionInvalida {
         String csvFile = "/Users/guadaluperial/Desktop/Spotify_canciones.csv";
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
@@ -75,7 +80,12 @@ public class SpotifyFunctions {
                     }
 
                     DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                    LocalDate snapshotDate = LocalDate.parse(lineaSeparada[6].replaceAll("\"",""), formato);
+                    String fechaArreglada = lineaSeparada[6].replaceAll("\"","");
+                    if (fechaArreglada.contains("\"")) {
+                        System.out.println(fechaArreglada);
+                    }
+                    LocalDate snapshotDate = LocalDate.parse(fechaArreglada, formato);
+//                    snapshotDate = snapshotDate.
 
                     int popularity = Integer.parseInt(lineaSeparada[7].replaceAll("\"",""));
                     boolean isExplicit = Boolean.parseBoolean(lineaSeparada[8].replaceAll("\"",""));
@@ -95,7 +105,7 @@ public class SpotifyFunctions {
                     float tempo = Float.parseFloat(lineaSeparada[22].replaceAll("\"",""));
                     int timeSignature = Integer.parseInt(lineaSeparada[23].replace(";", "").replaceAll("\"", ""));
 
-                    this.agregarDatos(spotifyId, name, artistas, dailyRank, dailyMovement, weeklyMovement, country, snapshotDate, popularity, isExplicit, durationMs, albumName, albumReleaseDate, danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, liveness, valence, tempo, timeSignature);
+                    this.addInfoHash(spotifyId, name, artistas, dailyRank, dailyMovement, weeklyMovement, country, snapshotDate, popularity, isExplicit, durationMs, albumName, albumReleaseDate, danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, liveness, valence, tempo, timeSignature);
                 }
 
             }
@@ -104,38 +114,70 @@ public class SpotifyFunctions {
         }
     }
 
-    public void top10PorPais(String pais, String fecha1) throws  InformacionInvalida {
 
+        public void top10PorPais() throws InformacionInvalida {
+            Scanner scanner = new Scanner(System.in);
+
+            System.out.print("Ingrese el país: ");
+            String pais = scanner.nextLine();
+
+            System.out.print("Ingrese la fecha (yyyy-MM-dd): ");
+            String fecha1 = scanner.nextLine();
+
+            DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate fecha = LocalDate.parse(fecha1, formato);
+
+            int posicion1 = this.spotify.search(fecha);
+            if (posicion1 == -1) {
+                System.out.println("La fecha " + fecha + " no está registrada.");
+            } else {
+                HashImpl<String, MyBinarySearchTreeImpl<Integer, Song>> hash2 = this.spotify.getData(posicion1);
+                int posicion2 = hash2.search(pais);
+                if (posicion2 == -1) {
+                    System.out.println("El país " + pais + " no está registrado.");
+                } else {
+                    System.out.println("El top 10 en " + pais + " el " + fecha1 + " fue: ");
+                    MyBinarySearchTreeImpl<Integer, Song> arbol = hash2.getData(posicion2);
+                    List<Song> top50 = arbol.inOrderV();
+                    for (int i = 0; i < 10; i++) {
+                        Song cancion = top50.get(i);
+                        System.out.println((i + 1) + ") " + cancion.getName() + " de ");
+                        for (int j = 0; j < cancion.getArtists().size(); j++) {
+                            System.out.println(cancion.getArtists().get(j).name);
+                        }
+                    }
+                }
+            }
+    }
+    public void top5Global() throws InformacionInvalida {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Ingrese la fecha (yyyy-MM-dd): ");
+        String fecha1 = scanner.nextLine();
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate fecha = LocalDate.parse(fecha1, formato);
-
-        int posicion1= this.spotify.search(fecha);
-        if (posicion1==-1){
-            System.out.println("La fecha "+fecha+" no esta registrada.");
-        }
-        else {
-            HashImpl<String,MyBinarySearchTreeImpl<Integer,Song>> hash2= this.spotify.getData(posicion1);
-            int posicion2= hash2.search(pais);
-            if (posicion2==-1){
-                System.out.println("El pais "+pais+" no esta registrado.");
-            }
-            else {
-                System.out.println("El top 10 en "+pais+" el "+fecha1+" fue: ");
-                MyBinarySearchTreeImpl<Integer, Song> arbol= hash2.getData(posicion2);
-                List<Song> top50= arbol.inOrderV();
-                for (int i=0; i<10;i++){
-                    Song cancion= top50.get(i);
-                    System.out.println(i+1 +") "+ cancion.getName() +" de ");
-                    for(int j=0; j<cancion.getArtists().size(); j++){
-                        System.out.println( cancion.getArtists().get(j).name);
+        int posicion1 = this.spotify.search(fecha);
+        if (posicion1 == -1) {
+            System.out.println("La fecha " + fecha + " no está registrada.");
+        } else {
+            MyBinarySearchTreeImpl newTree = new MyBinarySearchTreeImpl<>();
+            for (int i = 0; i < this.spotify.getData(posicion1).getList().length; i++) { //recorremos paises con la i
+                int contador = 0;
+                HashNode<String, MyBinarySearchTreeImpl<Integer, Song>> nodoPais = this.spotify.getData(posicion1).getList()[i];
+                for (int j = 0; j < nodoPais.getData().inOrderV().size(); j++) {
+                    if(!newTree.contains(nodoPais.getData().inOrderV().get(j).getSpotifyId())) {
+                        newTree.add(contador, nodoPais.getData().inOrderV().get(j).getSpotifyId()); //<T,K>
+                    }else{
+                        TreeNode node = new TreeNode<>(nodoPais.getData().inOrderV().get(j).getSpotifyId(), newTree.find(nodoPais.getData().inOrderV().get(j).getSpotifyId()));
+                        node.setValue(contador+1);
                     }
+                }
                 }
             }
         }
     }
 
 
-}
+
 
 
 

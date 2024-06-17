@@ -7,7 +7,7 @@ public class HashImpl<K,V> implements HashTable<K,V> {
 
     public HashImpl(int size) {
         this.size = size;
-        this.list = (HashNode<K,V>[]) new HashNode<?,?>[size];
+        this.list = (HashNode<K,V>[]) new HashNode[size];
         this.has = 0;
     }
 
