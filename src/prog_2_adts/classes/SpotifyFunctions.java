@@ -149,6 +149,7 @@ public class SpotifyFunctions {
                 }
             }
     }
+
     public void top5Global() throws InformacionInvalida {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Ingrese la fecha (yyyy-MM-dd): ");
@@ -159,21 +160,46 @@ public class SpotifyFunctions {
         if (posicion1 == -1) {
             System.out.println("La fecha " + fecha + " no está registrada.");
         } else {
-            MyBinarySearchTreeImpl newTree = new MyBinarySearchTreeImpl<>();
+            HashImpl<String, MyList<Integer>> dailySongsHash = new HashImpl<>(100);
             for (int i = 0; i < this.spotify.getData(posicion1).getList().length; i++) { //recorremos paises con la i
-                int contador = 0;
-                HashNode<String, MyBinarySearchTreeImpl<Integer, Song>> nodoPais = this.spotify.getData(posicion1).getList()[i];
-                for (int j = 0; j < nodoPais.getData().inOrderV().size(); j++) {
-                    if(!newTree.contains(nodoPais.getData().inOrderV().get(j).getSpotifyId())) {
-                        newTree.add(contador, nodoPais.getData().inOrderV().get(j).getSpotifyId()); //<T,K>
+                HashNode<String, MyBinarySearchTreeImpl<Integer, Song>> nodoPais = this.spotify.getData(posicion1).getList()[i]; //SpotifyId como Key
+                for (int j = 0; j < nodoPais.getData().inOrderV().size(); j++) { //con la j recorremos canciones
+                    String spotifyId = this.spotify.getData(posicion1).getData(i).find(j).getSpotifyId();
+                    int hashCode = spotifyId.hashCode();
+                    int position = (Math.abs(hashCode))/dailySongsHash.getSize();
+                    if(dailySongsHash.getData(position) == null){
+                        MyList<Integer> newList = new MyLinkedListImpl<>();
+                        newList.add(1);
+                        dailySongsHash.add(spotifyId, newList);
                     }else{
-                        TreeNode node = new TreeNode<>(nodoPais.getData().inOrderV().get(j).getSpotifyId(), newTree.find(nodoPais.getData().inOrderV().get(j).getSpotifyId()));
-                        node.setValue(contador+1);
+                        if(dailySongsHash.getNode(position).getValue() == spotifyId){
+                            dailySongsHash.getNode(position).getData().add(1);
+                        }else{
+                            int contPosiciones = 0;
+                            while (dailySongsHash.getNode(position).getValue() != spotifyId){
+                            position ++;
+                            contPosiciones ++;
+                            if (contPosiciones == dailySongsHash.getList().length){
+                                break;
+                            }
+                            if(position == dailySongsHash.getSize()){
+                                contPosiciones = 0;
+                            }
+                            }
+                            if(dailySongsHash.getNode(position).getValue() == spotifyId){
+                                dailySongsHash.getNode(position).getData().add(1);
+                            }
+                        }
+                        }
                     }
+
+
                 }
-                }
+            Song[] top5Array = new Song[5];
+            //terminar
             }
         }
+
     }
 
 

@@ -146,6 +146,29 @@ public class MyBinarySearchTreeImpl<k extends Comparable<k>, T> implements MyBin
         return colValues;
     }
 
+
+    public TreeNode search(k key, TreeNode root) {
+        TreeNode newNode = new TreeNode<k,T>(key, null);
+        if (root != null) {
+            int nValue = key.compareTo((k) root.getKey());
+            if (nValue == 0) {
+                newNode = root;
+            }
+            else if (nValue > 0) {
+                newNode = search(key, root.getRight());
+            }
+            else {
+                newNode = search(key, root.getLeft());
+            }
+        }
+        return newNode;
+    }
+    @Override
+    public TreeNode search(k key) {
+        return search(key, root);
+    }
+
+
     public MyBinarySearchTreeImpl(TreeNode<k, T> root) {
         this.root = root;
     }
