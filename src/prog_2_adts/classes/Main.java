@@ -7,7 +7,8 @@ public class Main {
     public static void main(String[] args) throws InformacionInvalida {
         SpotifyFunctions miClase = new SpotifyFunctions();
         miClase.readCVS();
-        miClase.top10PorPais();
+        //miClase.top10PorPais();
+        miClase.top5Global();
      
     }
 }

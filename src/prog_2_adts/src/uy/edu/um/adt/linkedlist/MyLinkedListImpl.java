@@ -234,4 +234,16 @@ public class MyLinkedListImpl<T> implements MyList<T>, MyQueue<T>, MyStack<T> {
     public boolean isEmpty() {
         return (this.first == null && this.last==null);
     }
+
+    @Override
+    public void set(int index, T data) {
+        if (index < 0 || index >= this.size()) {
+            throw new IndexOutOfBoundsException("Index out of bounds");
+        }
+        Node<T> current = this.first;
+        for (int i = 0; i < index; i++) {
+            current = current.getNext();
+        }
+        current.setValue(data);
+    }
 }

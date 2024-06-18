@@ -15,4 +15,5 @@ public interface MyList<T> {
     Node<T> getFirst();
 
     boolean isEmpty();
+    public void set(int index, T data);
 }
