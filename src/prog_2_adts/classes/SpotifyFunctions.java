@@ -21,6 +21,7 @@ import java.util.Scanner;
 public class SpotifyFunctions {
 
     private HashImpl<LocalDate, HashImpl<String, MyBinarySearchTreeImpl<Integer, Song>>> spotify = new HashImpl<>(210);
+    private MyList<Artist> artistas = new MyLinkedListImpl<>();
 
     public HashImpl<LocalDate, HashImpl<String, MyBinarySearchTreeImpl<Integer, Song>>> getSpotify() {
         return spotify;
@@ -42,7 +43,11 @@ public class SpotifyFunctions {
         } else {
             HashImpl<String, MyBinarySearchTreeImpl<Integer, Song>> hash2 = new HashImpl<>(75); // num de paises
             this.spotify.add(snapshotDate, hash2);
-            hash2.add(country, new MyBinarySearchTreeImpl<>(new TreeNode<>(dailyRank, new Song(spotifyId, name, artists, tempo, snapshotDate, dailyRank))));
+            Song song = new Song(spotifyId, name, artists, tempo, snapshotDate, dailyRank);
+            hash2.add(country, new MyBinarySearchTreeImpl<>(new TreeNode<>(dailyRank, song)));
+            for (int i = 0; i < song.getArtists().size(); i++) {
+                artists.add(song.getArtists().get(i));
+            }
         }
     }
 
@@ -174,7 +179,7 @@ public class SpotifyFunctions {
                         newList.add(1);
                         dailySongsHash.add(spotifyId, newList);
                     } else {
-                        if (dailySongsHash.getNode(position).getValue().equals(spotifyId)) {
+                        if (dailySongsHash.getNode(position).getValue() == spotifyId) {
                             dailySongsHash.getNode(position).getData().add(1);
                         } else {
                             int contPosiciones = 0;
@@ -201,6 +206,7 @@ public class SpotifyFunctions {
                 HashNode<String, Integer> newNode = new HashNode<>(dailySongsHash.getNode(i).getValue(), contador);
                 newList.add(newNode);
             }
+
             ordenamiento(newList);
             MyList<String> res = new MyLinkedListImpl<>();
             for (int i = 0; i < 5; i++) {
@@ -220,83 +226,120 @@ public class SpotifyFunctions {
             }
         }
 
-
-    public void ordenamiento(MyList<HashNode<String, Integer>> newList){
-        for (int i = 0; i < newList.size() -1; i++) {
-            for (int j = 0; j < newList.size() -1 -i; j++) {
-                if(newList.get(j).getData() >newList.get(j+1).getData()){
+    public void ordenamiento(MyList<HashNode<String, Integer>> newList) {
+        for (int i = 0; i < newList.size() - 1; i++) {
+            for (int j = 0; j < newList.size() - 1 - i; j++) {
+                if (newList.get(j).getData() > newList.get(j + 1).getData()) {
                     HashNode<String, Integer> aux1 = newList.get(j);
-                    newList.get(j).setData(newList.get(j+1).getData());
-                    newList.get(j).setValue(newList.get(j+1).getValue());
-                    newList.get(j+1).setData(aux1.getData());
-                    newList.get(j+1).setValue(aux1.getValue());
+                    newList.get(j).setData(newList.get(j + 1).getData());
+                    newList.get(j).setValue(newList.get(j + 1).getValue());
+                    newList.get(j + 1).setData(aux1.getData());
+                    newList.get(j + 1).setValue(aux1.getValue());
                 }
             }
         }
     }
+    private Artist getArtis(String name) {
+        Artist newArtist = new Artist(name);
+        if (artistas.contains(newArtist)) {
+            for (int i = 0; i < artistas.size(); i++) {
+                if (artistas.get(i).equals(newArtist)) {
+                    return artistas.get(i);
+                }
+            }
+        }return null;
+    }
 
+    public int countArtistAppearances() throws InformacionInvalida {
+        int res = 0;
+        Scanner scanner = new Scanner(System.in);
 
+        System.out.print("Ingrese el nombre del artista: ");
+        String artist = scanner.nextLine();
 
+        System.out.print("Ingrese la fecha (yyyy-MM-dd): ");
+        String fecha1 = scanner.nextLine();
 
-
-
-
-
-
-
-
-
-
-
-
-
-    public void top7PorRango(String fechaInicio, String fechaFin) throws InformacionInvalida {
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate fechaI = LocalDate.parse(fechaInicio, formato);
-        LocalDate fechaF = LocalDate.parse(fechaFin, formato);
-        int posicion= 0;
+        LocalDate fecha = LocalDate.parse(fecha1, formato);
 
-        long diferenciaDias = ChronoUnit.DAYS.between(fechaI, fechaF);  //cuento los dias entre fechas xq voy a iterar.
+        int posicion1 = this.spotify.search(fecha);
+        if (posicion1 == -1) {
+            System.out.println("La fecha " + fecha + " no está registrada.");
+        } else {
+            HashImpl<String, MyBinarySearchTreeImpl<Integer, Song>> hashPorFecha = this.spotify.getData(posicion1);
+            HashImpl<String, MyList<Integer>> artistApearence = new HashImpl<>(100); //el nombre del artista como key
+            if (getArtis(artist) == null) {
+                System.out.println("El artista " + artist + " no está registrado.");
+            } else {
+                Artist newArtist = getArtis(artist);
+                for (int i = 0; i < spotify.getData(posicion1).getList().length; i++) { //recorremos los paises con la i
+                    HashNode<String, MyBinarySearchTreeImpl<Integer, Song>> nodoPais = spotify.getData(posicion1).getList()[i];
 
-        HashImpl<String,Integer> hashFrecCanciones= new HashImpl<>(2500);
-        MyBinarySearchTreeImpl<Integer,String> arbol= new MyBinarySearchTreeImpl<>();
-        int contador=1;
+                    for (int j = 0; j < nodoPais.getData().inOrderV().size(); j++) { //j es la cancion
+                        MyList<Artist> artistsList = nodoPais.getData().find(j).getArtists();
+                        for (int k = 0; k < artistsList.size(); k++) {
+                            if (artistsList.get(k).equals(newArtist)) {
+                                int artistHashCode = newArtist.getName().hashCode();
+                                int positionArtist = Math.abs(artistHashCode) % artistApearence.getSize();
+                                if (artistApearence.getData(positionArtist) == null) {
+                                    MyList<Integer> newList = new MyLinkedListImpl<>();
+                                    newList.add(1);
+                                    artistApearence.add(newArtist.getName(), newList);
+                                } else {
+                                    if (artistApearence.getNode(positionArtist).getValue().equals(newArtist.getName())) {
+                                        artistApearence.getNode(positionArtist).getData().add(1);
+                                    } else {
+                                        int contPosiciones = 0;
+                                        while (!artistApearence.getNode(positionArtist).getValue().equals(newArtist.getName())) {
+                                            positionArtist++;
+                                            contPosiciones++;
+                                            if (contPosiciones == artistApearence.getList().length) {
+                                                break;
+                                            }
+                                            if (positionArtist == artistApearence.getSize()) {
+                                                contPosiciones = 0;
+                                            }
+                                        }
+                                        if (artistApearence.getNode(positionArtist).getValue().equals(newArtist.getName())) {
+                                            artistApearence.getNode(positionArtist).getData().add(1);
 
-        for (int i=0; i<diferenciaDias; i++){
-            posicion= spotify.search(fechaI.plusDays(i));
-            HashImpl<String,MyBinarySearchTreeImpl<Integer,Song>> hash2=spotify.getData(posicion);
-            for (int j=0; j<hash2.getSize(); j++){
-                if(hash2.getNode(j)!=null){
-                    List<Song> canciones= hash2.getData(j).inOrderV();
-                    for(int l=0; l<50;l++){
-                        Song cancion= canciones.get(l);
-                        for(int k=0; k<cancion.getArtists().size(); k++){
-                            String nombre=cancion.getArtists().get(k).getName();
-                            int posicion2=hashFrecCanciones.search(nombre);
-                            if(posicion2 == -1){
-                                hashFrecCanciones.add(nombre,1);
+                                        }
+
+
+                                    }
+                                }
+
                             }
-                            else{
-                                HashNode<String,Integer> nodo=hashFrecCanciones.getNode(posicion2);
-                                nodo.setData(nodo.getData()+1);
+                        }
+
+                    }
+                    int artistHashCode = newArtist.getName().hashCode();
+                    int positionArtist = Math.abs(artistHashCode) % artistApearence.getSize();
+                    if(artistApearence.getData(positionArtist).equals(newArtist.getName())){
+                        res = artistApearence.getNode(positionArtist).getData().size();
+                    }
+                    else{
+                        int contador = 0;
+                        while (!artistApearence.getData(positionArtist).equals(newArtist.getName())){
+                            contador ++;
+                            positionArtist++;
+                            if(positionArtist == artistApearence.getSize()){
+                                positionArtist = 0;
+                        }
+                            if (contador == artistApearence.getList().length) {
+                                break;
                             }
+                    }
+                        if(artistApearence.getData(positionArtist).equals(newArtist.getName())){
+                            res = artistApearence.getNode(positionArtist).getData().size();
                         }
                     }
                 }
+
             }
         }
-        for(int m=0; m<hashFrecCanciones.getSize(); m++){
-            if(hashFrecCanciones.getNode(m)!=null){
-                HashNode<String,Integer> nodo= hashFrecCanciones.getNode(m);
-                arbol.add(nodo.getData(),nodo.getValue());
-            }
-        }
-        List<String> topArtistas= arbol.inOrderV();
-        System.out.println("Los artistas mas esuchados del "+fechaInicio+" al "+ fechaFin+" fueron:");
-        for (int n = topArtistas.size(); n>topArtistas.size()-7 ;n--){
-            System.out.println(contador+") "+topArtistas.get(n-1));
-            contador++;
-        }
+        return res;
     }
 
 }
