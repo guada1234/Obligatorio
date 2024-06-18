@@ -264,7 +264,6 @@ public class SpotifyFunctions {
         Scanner scanner = new Scanner(System.in);
 
         try {
-            // Pedir el rango de fechas
             System.out.print("Ingrese la fecha de inicio (yyyy-MM-dd): ");
             String fechaInicioStr = scanner.nextLine();
             LocalDate fechaInicio = LocalDate.parse(fechaInicioStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -277,7 +276,6 @@ public class SpotifyFunctions {
                 throw new InformacionInvalida("La fecha de inicio debe ser anterior o igual a la fecha de fin.");
             }
 
-            // Pedir el rango de tempo
             System.out.print("Ingrese el tempo mínimo: ");
             int tempoMin = scanner.nextInt();
             System.out.print("Ingrese el tempo máximo: ");
@@ -299,18 +297,18 @@ public class SpotifyFunctions {
                         HashNode<String, MyBinarySearchTreeImpl<Integer, Song>> nodoPais = hashDate.getNode(i);
                         if (nodoPais != null) {
                             List<Song> countryList = nodoPais.getData().inOrderValue();
-                            for (Song song : countryList) {
-                                float tempo = song.getTempo();
+                            for (int p =0; p< countryList.size(); p++){
+                                float tempo = countryList.get(p).getTempo();
                                 boolean alreadyCounted = false;
-                                for (Song countedSong : countedSongs) {
-                                    if (countedSong.equals(song)) {
+                                for (int h = 0; h<countedSongs.size() ; h++) {
+                                    if (countedSongs.get(h).equals(countryList.get(p))) {
                                         alreadyCounted = true;
                                         break;
                                     }
                                 }
                                 if (tempo >= tempoMin && tempo <= tempoMax && !alreadyCounted) {
                                     count++;
-                                    countedSongs.add(song); // Agregar la canción a la lista de canciones contadas
+                                    countedSongs.add(countryList.get(p)); // Agregar la canción a la lista de canciones contadas
                                 }
                             }
                         }

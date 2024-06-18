@@ -3,6 +3,7 @@ package prog_2_adts.classes;
 import prog_2_adts.src.uy.edu.um.adt.linkedlist.MyList;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 class Song {
     private String spotifyId;
@@ -19,6 +20,19 @@ class Song {
         this.tempo = tempo;
         this.snapshotDate = snapshotDate;
         this.dailyRank = dailyRank;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Song song = (Song) o;
+        return Objects.equals(spotifyId, song.spotifyId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(spotifyId);
     }
 
     public Integer getDailyRank() {
