@@ -12,7 +12,7 @@ public interface MyBinarySearchTree<k extends Comparable<k>, T> {
     List<k> inOrder();
     List<T> preOrderV();
     List<T> postOrderV();
-    List<T> inOrderV();
+    List<T> inOrderValue();
     TreeNode search(k key);
 
 }

@@ -138,7 +138,7 @@ public class MyBinarySearchTreeImpl<k extends Comparable<k>, T> implements MyBin
         return colValues;
     }
 
-    public List<T> inOrderV() {
+    public List<T> inOrderValue() {
         List<T> colValues = new ArrayList<T>();
         if (root != null) {
             colValues.addAll(root.inOrderTraverseV());

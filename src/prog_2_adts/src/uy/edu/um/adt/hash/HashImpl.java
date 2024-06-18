@@ -40,7 +40,33 @@ public class HashImpl<K,V> implements HashTable<K,V> {
     }
 
 
-    public void add(K value,V data) {
+    public void add(K value, V data) {
+        int hashcode = value.hashCode();
+        int hc = (Math.abs(hashcode)) % size;
+
+        // Verificar si el valor ya existe
+        if (this.search(value) >= 0) {
+            System.out.println("El valor ya existe en el hash");
+            return;
+        }
+
+        // Redimensionar si es necesario
+        if (this.getHas() == this.getSize()) {
+            this.resize(this.size * 2);
+            System.out.println("Se agrandó el hash a tamaño " + this.size + " porque no había suficiente espacio.");
+        }
+
+        // Encontrar la posición adecuada para insertar el nodo
+        while (this.list[hc] != null) {
+            hc = (hc + 1) % size;
+        }
+
+        // Insertar el nodo
+        this.list[hc] = new HashNode<>(value, data);
+        this.addHas();
+    }
+
+    public void add2(K value,V data) {
         HashNode<K,V> nodo= new HashNode<K,V>(value, data);
         int hashcode = value.hashCode();
         int hc = (Math.abs(hashcode))%size;
@@ -112,7 +138,7 @@ public class HashImpl<K,V> implements HashTable<K,V> {
 
     public V getData(int position) throws InformacionInvalida {
         if(position>this.size){
-            throw new InformacionInvalida("");
+            throw new InformacionInvalida("el tamaño es mayor al del hash");
         }
         return this.list[position].getData();
     }
@@ -123,6 +149,28 @@ public class HashImpl<K,V> implements HashTable<K,V> {
         }
         return this.list[position];
     }
+    public boolean containsKey(Object key) {
+        int position = Math.abs(key.hashCode()) % this.size;
+        HashNode<K, V> node = this.getList()[position];
+
+        while (node!= null) {
+            if (node.getValue().equals(key)) {
+                return true;
+            }
+            node = node. getNext();
+        }
+
+        return false;
+    }
+    public V get(K key) {
+        for (HashNode<K, V> node : list) {
+            if (node != null && node.getValue().equals(key)) {
+                return node.getData();
+            }
+        }
+        return null; // Clave no encontrada
+    }
+
 }
 
 

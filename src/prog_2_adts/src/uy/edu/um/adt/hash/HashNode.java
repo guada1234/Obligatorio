@@ -4,6 +4,7 @@ import java.util.Objects;
 public class HashNode<K,V>{
     private K value;
     private V data;
+    private HashNode<K, V> next;
     public K getValue() {
         return value;
     }
@@ -13,7 +14,17 @@ public class HashNode<K,V>{
     public HashNode(K value, V data) {
         this.value = value;
         this.data = data;
+        this.next = next;
     }
+
+    public HashNode<K, V> getNext() {
+        return next;
+    }
+
+    public void setNext(HashNode<K, V> next) {
+        this.next = next;
+    }
+
     public V getData() {return data;}
     public void setData(V data) {this.data = data;}
 
