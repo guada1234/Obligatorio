@@ -170,6 +170,9 @@ public class HashImpl<K,V> implements HashTable<K,V> {
         }
         return null; // Clave no encontrada
     }
+    public boolean contains(K value) {
+        return search(value) != -1;
+    }
 
 }
 

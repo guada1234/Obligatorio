@@ -229,6 +229,7 @@ public class SpotifyFunctions {
         LocalDate fecha = null;
         boolean fechaValida = false;
 
+        // Bucle para obtener una fecha válida
         while (!fechaValida) {
             System.out.print("Ingrese la fecha (yyyy-MM-dd): ");
             String fecha1 = scanner.nextLine();
@@ -245,56 +246,56 @@ public class SpotifyFunctions {
         if (datePosition == -1) {
             System.out.println("La fecha " + fecha + " no está registrada.");
         } else {
-            MyBinarySearchTreeImpl<Integer, String> tree = new MyBinarySearchTreeImpl<>();
+            MyList<HashNode<Integer, String>> finalList = new MyLinkedListImpl<>();
             HashImpl<String, Integer> SongsHash = new HashImpl<>(1730);
             HashImpl<String, MyBinarySearchTreeImpl<Integer, Song>> countryHash = this.spotify.getData(datePosition);
 
+            // Iterar sobre todos los países y canciones
             for (int i = 0; i < countryHash.getSize(); i++) {
                 HashNode<String, MyBinarySearchTreeImpl<Integer, Song>> countryNode = countryHash.getNode(i);
                 if (countryNode != null) {
                     List<Song> canciones = countryNode.getData().inOrderValue();
                     for (int j = 0; j < Math.min(50, canciones.size()); j++) {
-                        String cancion = canciones.get(j).getName();
-                        int posicion = SongsHash.search(cancion);
-                        if (posicion == -1) {
-                            SongsHash.add(cancion, 1);
+                        String cancionName = canciones.get(j).getName();
+                        if (SongsHash.contains(cancionName)) {
+                            int actualPosition = SongsHash.search(cancionName);
+                            int oldCount = SongsHash.getNode(actualPosition).getData();
+                            SongsHash.getNode(actualPosition).setData(oldCount + 1);
                         } else {
-                            HashNode<String, Integer> nodo = SongsHash.getNode(posicion);
-                            nodo.setData(nodo.getData() + 1);
+                            SongsHash.add(cancionName, 1);
                         }
                     }
                 }
             }
 
-            for (int k = 0; k < SongsHash.getSize(); k++) {
+            // Transferir datos del hash a una lista
+            for (int k = 0; k < SongsHash.getSize()  ; k++) {
                 HashNode<String, Integer> node = SongsHash.getNode(k);
                 if (node != null) {
-                    tree.add(node.getData(), node.getValue());
+                    HashNode<Integer, String> newNode = new HashNode<>(node.getData(), node.getValue());
+                    finalList.add(newNode);
                 }
             }
 
-            List<String> topCanciones = tree.inOrderValue();
+            // Ordenar la lista de canciones por cantidad de apariciones (descendente)
+            ordenamiento(finalList);
 
+            // Imprimir las top 5 canciones
             System.out.println("Las canciones más escuchadas el día " + fecha + " fueron:");
-            int contador = 0;
-            for (int z = 0; z < 5; z++) {
-                contador++;
-                System.out.println(contador + ". " + topCanciones.get(z));
+            for (int z = 0; z < Math.min(5, finalList.size()); z++) {
+                System.out.println((z + 1) + ". " + finalList.get(z).getData() + " con " + finalList.get(z).getValue() + " apariciones.");
             }
         }
     }
 
-
-
-    public void ordenamiento(MyList<HashNode<String, Integer>> newList) {
+    public void ordenamiento(MyList<HashNode<Integer, String>> newList) {
+        // Ordenamiento burbuja mejorado (Bubble Sort)
         for (int i = 0; i < newList.size() - 1; i++) {
             for (int j = 0; j < newList.size() - 1 - i; j++) {
-                if (newList.get(j).getData() > newList.get(j + 1).getData()) {
-                    HashNode<String, Integer> aux1 = newList.get(j);
-                    newList.get(j).setData(newList.get(j + 1).getData());
-                    newList.get(j).setValue(newList.get(j + 1).getValue());
-                    newList.get(j + 1).setData(aux1.getData());
-                    newList.get(j + 1).setValue(aux1.getValue());
+                if (newList.get(j).getValue() < newList.get(j + 1).getValue()) {
+                    HashNode<Integer, String> aux = newList.get(j);
+                    newList.set(j, newList.get(j + 1));
+                    newList.set(j + 1, aux);
                 }
             }
         }
