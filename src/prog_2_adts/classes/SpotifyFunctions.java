@@ -15,6 +15,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,74 @@ public class SpotifyFunctions {
     }
 
     //public MyList<Song> songs = new MyLinkedListImpl<>();
+
+
+    public void menu() throws InformacionInvalida {
+        Scanner scanner = new Scanner(System.in);
+        boolean opcionValida = false;
+
+        while (!opcionValida) {
+            System.out.print("Bienvenido a Spotify!\n ¿Que consulta desea realizar? \n 1) Top 10 canciones en un país en un día dado. \n 2) Top 5 canciones que aparecen en más top 50 en un día dado.\n 3) Top 7 artistas que más aparecen en los top 50 para un rango de fechas \n 4) Cantidad de tops 50 en los que aparece un artista en una fecha \n 5) Cantidad de canciones con un tempo en un rango específico para un rango de fechas. \n Consulta: ");
+            try {
+                int eleccion = Integer.parseInt(scanner.nextLine());
+
+                switch (eleccion) {
+                    case 1:
+                        opcionValida = true;
+                        top10PorPais();
+                        break;
+                    case 2:
+                        opcionValida = true;
+                        top5PorDia();
+                        break;
+                    case 3:
+                        opcionValida = true;
+                        top7PorRango();
+                        break;
+                    case 4:
+                        opcionValida = true;
+                        countArtistAppearances();
+                        break;
+                    case 5:
+                        opcionValida = true;
+                        countSongsByTempoRangeAndDateRange();
+                        break;
+                    default:
+                        System.out.println("Por favor seleccione una opcion del 1-5");
+                        break;  // No need to call this.menu() again, the loop will repeat
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Por favor ingrese un número válido.");
+            }
+        }
+
+        boolean respValida = false;
+        while (!respValida) {
+            System.out.println("Desea realizar otra consulta? \n 1) Si \n 2) No \n Respuesta: ");
+            try {
+                int resp = Integer.parseInt(scanner.nextLine());
+
+                switch (resp) {
+                    case 1:
+                        respValida = true;
+                        this.menu();
+                        break;
+                    case 2:
+                        respValida = true;
+                        System.out.println("Hasta la proxima!");
+                        break;
+                    default:
+                        System.out.println("Por favor seleccione una opcion valida (1 o 2)");
+                        break;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Por favor ingrese un número válido.");
+            }
+        }
+    }
+
+
+
 
     public void addInfoHash(String spotifyId, String name, MyList<Artist> artists, int dailyRank, String country, LocalDate snapshotDate, float tempo) throws InfoIncorrecta, InformacionInvalida {
         int posicion1 = this.spotify.search(snapshotDate);
@@ -108,25 +177,39 @@ public class SpotifyFunctions {
     public void top10PorPais() throws InformacionInvalida {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Ingrese el país: ");
-        String pais = scanner.nextLine();
+        LocalDate fecha = null;
+        boolean fechaValida = false;
 
-        System.out.print("Ingrese la fecha: ");
-        String date = scanner.nextLine();
+        while (!fechaValida) {
+            System.out.print("Ingrese la fecha (yyyy-MM-dd): ");
+            String date = scanner.nextLine();
+            try {
+                DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                fecha = LocalDate.parse(date, formato);
+                fechaValida = true;  // Fecha válida, salimos del bucle
+            } catch (DateTimeParseException e) {
+                System.out.println("Por favor ingrese una fecha válida en el formato yyyy-MM-dd.");
+            }
+        }
 
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate fecha = LocalDate.parse(date, formato);
+        boolean paisValido = false;
+        while (!paisValido) {
+            System.out.print("Ingrese el país: ");
+            String pais = scanner.nextLine();
 
-        int datePosition = this.spotify.search(fecha);
-        if (datePosition == -1) {
-            System.out.println("La fecha " + fecha + " no está registrada.");
-        } else {
+            int datePosition = this.spotify.search(fecha);
+            if (datePosition == -1) {
+                System.out.println("La fecha " + fecha + " no está registrada.");
+                return;
+            }
+
             HashImpl<String, MyBinarySearchTreeImpl<Integer, Song>> hashCountry = this.spotify.getData(datePosition);
             int countryPosition = hashCountry.search(pais);
             if (countryPosition == -1) {
-                System.out.println("El país " + pais + " no está registrado.");
+                System.out.println("El país " + pais + " no está registrado. Por favor ingrese un país válido.");
             } else {
-                System.out.println("El top 10 en " + pais + " el " + date + " fue: ");
+                paisValido = true;
+                System.out.println("El top 10 en " + pais + " el " + fecha + " fue: ");
                 MyBinarySearchTreeImpl<Integer, Song> tree = hashCountry.getData(countryPosition);
                 List<Song> top50 = tree.inOrderValue();
                 for (int i = 0; i < 10; i++) {
@@ -140,14 +223,23 @@ public class SpotifyFunctions {
         }
     }
 
+
     public void top5PorDia() throws InformacionInvalida {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Ingrese la fecha: ");
-        String fecha1 = scanner.nextLine();
-        scanner.close();
+        LocalDate fecha = null;
+        boolean fechaValida = false;
 
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate fecha = LocalDate.parse(fecha1, formato);
+        while (!fechaValida) {
+            System.out.print("Ingrese la fecha (yyyy-MM-dd): ");
+            String fecha1 = scanner.nextLine();
+            try {
+                DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                fecha = LocalDate.parse(fecha1, formato);
+                fechaValida = true; // Fecha válida, salimos del bucle
+            } catch (DateTimeParseException e) {
+                System.out.println("Por favor ingrese una fecha válida en el formato yyyy-MM-dd.");
+            }
+        }
 
         int datePosition = this.spotify.search(fecha);
         if (datePosition == -1) {
@@ -193,6 +285,7 @@ public class SpotifyFunctions {
     }
 
 
+
     public void ordenamiento(MyList<HashNode<String, Integer>> newList) {
         for (int i = 0; i < newList.size() - 1; i++) {
             for (int j = 0; j < newList.size() - 1 - i; j++) {
@@ -223,118 +316,175 @@ public class SpotifyFunctions {
         int res = 0;
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Ingrese el nombre del artista: ");
-        String artistName = scanner.nextLine();
+        String artistName = "";
+        boolean artistValido = false;
 
-        System.out.print("Ingrese la fecha (yyyy-MM-dd): ");
-        String fecha1 = scanner.nextLine();
+        while (!artistValido) {
+            System.out.print("Ingrese el nombre del artista: ");
+            artistName = scanner.nextLine();
 
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate fecha = LocalDate.parse(fecha1, formato);
+            Artist newArtist = getArtis(artistName);
+            if (newArtist == null) {
+                System.out.println("El artista " + artistName + " no está registrado. Por favor ingrese un nombre válido.");
+            } else {
+                artistValido = true;
+            }
+        }
+
+        LocalDate fecha = null;
+        boolean fechaValida = false;
+
+        while (!fechaValida) {
+            System.out.print("Ingrese la fecha (yyyy-MM-dd): ");
+            String fecha1 = scanner.nextLine();
+            try {
+                DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                fecha = LocalDate.parse(fecha1, formato);
+                fechaValida = true;  // Fecha válida, salimos del bucle
+            } catch (DateTimeParseException e) {
+                System.out.println("Por favor ingrese una fecha válida en el formato yyyy-MM-dd.");
+            }
+        }
 
         int datePosition = this.spotify.search(fecha);
         if (datePosition == -1) {
             System.out.println("La fecha " + fecha + " no está registrada.");
         } else {
             HashImpl<String, MyBinarySearchTreeImpl<Integer, Song>> hashDate = this.spotify.getData(datePosition);
-            Artist newArtist = getArtis(artistName);
-            if (newArtist == null) {
-                System.out.println("El artista " + artistName + " no está registrado.");
-            } else {
-                for (int i = 0; i < hashDate.getSize(); i++) {
-                    HashNode<String, MyBinarySearchTreeImpl<Integer, Song>> nodoPais = hashDate.getNode(i);
-                    if (nodoPais == null) {
-                        continue;
-                    }
-                    List<Song> countryList = nodoPais.getData().inOrderValue();
-                    for (Song song : countryList) {
-                        MyList<Artist> artistsList = song.getArtists();
-                        for (int l = 0; l < artistsList.size(); l++) {
-                            if (artistsList.get(l).equals(newArtist)) {
-                                res++;
-                            }
+            for (int i = 0; i < hashDate.getSize(); i++) {
+                HashNode<String, MyBinarySearchTreeImpl<Integer, Song>> nodoPais = hashDate.getNode(i);
+                if (nodoPais == null) {
+                    continue;
+                }
+                List<Song> countryList = nodoPais.getData().inOrderValue();
+                for (Song song : countryList) {
+                    MyList<Artist> artistsList = song.getArtists();
+                    for (int l = 0; l < artistsList.size(); l++) {
+                        if (artistsList.get(l).getName().equals(artistName)) {
+                            res++;
                         }
                     }
                 }
-                System.out.println("El artista " + artistName + " aparece " + res + " veces en el día " + fecha1);
             }
+            System.out.println("El artista " + artistName + " aparece " + res + " veces en el día " + fecha);
         }
     }
+
+
     public void countSongsByTempoRangeAndDateRange() throws InformacionInvalida {
         Scanner scanner = new Scanner(System.in);
 
-        try {
-            System.out.print("Ingrese la fecha de inicio (yyyy-MM-dd): ");
-            String fechaInicioStr = scanner.nextLine();
-            LocalDate fechaInicio = LocalDate.parse(fechaInicioStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        LocalDate fechaInicio = null;
+        LocalDate fechaFin = null;
+        boolean fechasValidas = false;
 
-            System.out.print("Ingrese la fecha de fin (yyyy-MM-dd): ");
-            String fechaFinStr = scanner.nextLine();
-            LocalDate fechaFin = LocalDate.parse(fechaFinStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        while (!fechasValidas) {
+            try {
+                System.out.print("Ingrese la fecha de inicio (yyyy-MM-dd): ");
+                String fechaInicioStr = scanner.nextLine();
+                fechaInicio = LocalDate.parse(fechaInicioStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-            if (fechaInicio.isAfter(fechaFin)) {
-                throw new InformacionInvalida("La fecha de inicio debe ser anterior o igual a la fecha de fin.");
+                System.out.print("Ingrese la fecha de fin (yyyy-MM-dd): ");
+                String fechaFinStr = scanner.nextLine();
+                fechaFin = LocalDate.parse(fechaFinStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+                if (fechaInicio.isAfter(fechaFin)) {
+                    System.out.println("La fecha de inicio debe ser anterior o igual a la fecha de fin. Por favor, ingrese las fechas nuevamente.");
+                } else {
+                    fechasValidas = true;
+                }
+            } catch (DateTimeParseException e) {
+                System.out.println("Por favor ingrese una fecha válida en el formato yyyy-MM-dd.");
             }
+        }
 
-            System.out.print("Ingrese el tempo mínimo: ");
-            int tempoMin = scanner.nextInt();
-            System.out.print("Ingrese el tempo máximo: ");
-            int tempoMax = scanner.nextInt();
+        int tempoMin = 0;
+        int tempoMax = 0;
+        boolean temposValidos = false;
 
-            if (tempoMin > tempoMax) {
-                throw new InformacionInvalida("El tempo mínimo no puede ser mayor que el tempo máximo.");
+        while (!temposValidos) {
+            try {
+                System.out.print("Ingrese el tempo mínimo: ");
+                tempoMin = Integer.parseInt(scanner.nextLine());
+
+                System.out.print("Ingrese el tempo máximo: ");
+                tempoMax = Integer.parseInt(scanner.nextLine());
+
+                if (tempoMin > tempoMax) {
+                    System.out.println("El tempo mínimo no puede ser mayor que el tempo máximo. Por favor, ingrese los tempos nuevamente.");
+                } else {
+                    temposValidos = true;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Por favor ingrese valores válidos para los tempos.");
             }
+        }
 
-            int count = 0;
-            List<Song> countedSongs = new ArrayList<>(); // Lista para almacenar las canciones contadas
+        int count = 0;
+        List<Song> countedSongs = new ArrayList<>(); // Lista para almacenar las canciones contadas
 
-            LocalDate fechaActual = fechaInicio;
-            while (!fechaActual.isAfter(fechaFin)) {
-                int datePosition = this.spotify.search(fechaActual);
-                if (datePosition != -1) {
-                    HashImpl<String, MyBinarySearchTreeImpl<Integer, Song>> hashDate = this.spotify.getData(datePosition);
-                    for (int i = 0; i < hashDate.getSize(); i++) {
-                        HashNode<String, MyBinarySearchTreeImpl<Integer, Song>> nodoPais = hashDate.getNode(i);
-                        if (nodoPais != null) {
-                            List<Song> countryList = nodoPais.getData().inOrderValue();
-                            for (int p =0; p< countryList.size(); p++){
-                                float tempo = countryList.get(p).getTempo();
-                                boolean alreadyCounted = false;
-                                for (int h = 0; h<countedSongs.size() ; h++) {
-                                    if (countedSongs.get(h).equals(countryList.get(p))) {
-                                        alreadyCounted = true;
-                                        break;
-                                    }
+        LocalDate fechaActual = fechaInicio;
+        while (!fechaActual.isAfter(fechaFin)) {
+            int datePosition = this.spotify.search(fechaActual);
+            if (datePosition != -1) {
+                HashImpl<String, MyBinarySearchTreeImpl<Integer, Song>> hashDate = this.spotify.getData(datePosition);
+                for (int i = 0; i < hashDate.getSize(); i++) {
+                    HashNode<String, MyBinarySearchTreeImpl<Integer, Song>> nodoPais = hashDate.getNode(i);
+                    if (nodoPais != null) {
+                        List<Song> countryList = nodoPais.getData().inOrderValue();
+                        for (int p = 0; p < countryList.size(); p++) {
+                            float tempo = countryList.get(p).getTempo();
+                            boolean alreadyCounted = false;
+                            for (int h = 0; h < countedSongs.size(); h++) {
+                                if (countedSongs.get(h).equals(countryList.get(p))) {
+                                    alreadyCounted = true;
+                                    break;
                                 }
-                                if (tempo >= tempoMin && tempo <= tempoMax && !alreadyCounted) {
-                                    count++;
-                                    countedSongs.add(countryList.get(p)); // Agregar la canción a la lista de canciones contadas
-                                }
+                            }
+                            if (tempo >= tempoMin && tempo <= tempoMax && !alreadyCounted) {
+                                count++;
+                                countedSongs.add(countryList.get(p)); // Agregar la canción a la lista de canciones contadas
                             }
                         }
                     }
                 }
-                fechaActual = fechaActual.plusDays(1); // Avanzar al siguiente día
             }
-
-            System.out.println("Cantidad de canciones con tempo en el rango [" + tempoMin + ", " + tempoMax + "] para el período desde "
-                    + fechaInicioStr + " hasta " + fechaFinStr + ": " + count);
-        } finally {
-            scanner.close();
+            fechaActual = fechaActual.plusDays(1); // Avanzar al siguiente día
         }
+
+        System.out.println("Cantidad de canciones con tempo en el rango [" + tempoMin + ", " + tempoMax + "] para el período desde "
+                + fechaInicio + " hasta " + fechaFin + ": " + count);
     }
+
+
+
     public void top7PorRango() throws InformacionInvalida {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Ingrese la fecha de inicio (yyyy-MM-dd): ");
-        String fechaInicio = scanner.nextLine();
+        LocalDate fechaI = null;
+        LocalDate fechaF = null;
+        boolean fechasValidas = false;
 
-        System.out.print("Ingrese la fecha de fin (yyyy-MM-dd): ");
-        String fechaFin = scanner.nextLine();
+        while (!fechasValidas) {
+            try {
+                System.out.print("Ingrese la fecha de inicio (yyyy-MM-dd): ");
+                String fechaInicio = scanner.nextLine();
+                DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                fechaI = LocalDate.parse(fechaInicio, formato);
 
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate fechaI = LocalDate.parse(fechaInicio, formato);
-        LocalDate fechaF = LocalDate.parse(fechaFin, formato);
+                System.out.print("Ingrese la fecha de fin (yyyy-MM-dd): ");
+                String fechaFin = scanner.nextLine();
+                fechaF = LocalDate.parse(fechaFin, formato);
+
+                if (fechaI.isAfter(fechaF)) {
+                    System.out.println("La fecha de inicio no puede ser posterior a la fecha de fin. Por favor, ingrese las fechas nuevamente.");
+                } else {
+                    fechasValidas = true;
+                }
+            } catch (DateTimeParseException e) {
+                System.out.println("Por favor ingrese una fecha válida en el formato yyyy-MM-dd.");
+            }
+        }
 
         long diferenciaDias = ChronoUnit.DAYS.between(fechaI, fechaF);  // Contar los días entre fechas para iterar.
 
@@ -375,12 +525,13 @@ public class SpotifyFunctions {
         }
 
         List<String> topArtistas = arbol.inOrderValue();
-        System.out.println("Los artistas más escuchados del " + fechaInicio + " al " + fechaFin + " fueron:");
-        for (int n = topArtistas.size(); n > topArtistas.size() - 7; n--) {
+        System.out.println("Los artistas más escuchados del " + fechaI + " al " + fechaF + " fueron:");
+        for (int n = topArtistas.size(); n > topArtistas.size() - 7 && n > 0; n--) { // Ensure we don't go out of bounds
             System.out.println(contador + ") " + topArtistas.get(n - 1));
             contador++;
         }
     }
+
 
 }
 

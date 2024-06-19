@@ -8,10 +8,8 @@ public class Main {
     public static void main(String[] args) throws InformacionInvalida, InfoIncorrecta {
         SpotifyFunctions miClase = new SpotifyFunctions();
         miClase.readCVS();
-        //miClase.top10PorPais();
         //miClase.top5PorDia();
-        //miClase.top7PorRango();
-        //miClase.countArtistAppearances();
-        miClase.countSongsByTempoRangeAndDateRange();
+        miClase.menu();
+
     }
 }
