@@ -30,72 +30,56 @@ public class SpotifyFunctions {
         return spotify;
     }
 
-    //public MyList<Song> songs = new MyLinkedListImpl<>();
+    private static long getUsedMemory() {
+        Runtime runtime = Runtime.getRuntime();
+        runtime.gc();
+        return runtime.totalMemory() - runtime.freeMemory();
+    }
 
+    private static void printMemoryAndTime(long memoryBefore, long memoryAfter, long executionTime, long promedio) {
+        System.out.println("Memoria utilizada antes de la consulta: " + memoryBefore + " bytes");
+        System.out.println("Memoria utilizada después de la consulta: " + memoryAfter + " bytes");
+        System.out.println("Memoria consumida por la consulta: " + (memoryAfter - memoryBefore) + " bytes");
+        System.out.println();
+        System.out.println("Tiempo de ejecución total de la consulta: " + executionTime + " nanosegundos");
+        System.out.println("Tiempo de ejecución promedio: " + promedio + " nanosegundos");
+    }
 
     public void menu() throws InformacionInvalida {
-        Scanner scanner = new Scanner(System.in);
-        boolean opcionValida = false;
-
-        while (!opcionValida) {
-            System.out.print("Bienvenido a Spotify!\n ¿Que consulta desea realizar? \n 1) Top 10 canciones en un país en un día dado. \n 2) Top 5 canciones que aparecen en más top 50 en un día dado.\n 3) Top 7 artistas que más aparecen en los top 50 para un rango de fechas \n 4) Cantidad de tops 50 en los que aparece un artista en una fecha \n 5) Cantidad de canciones con un tempo en un rango específico para un rango de fechas. \n Consulta: ");
-            try {
-                int eleccion = Integer.parseInt(scanner.nextLine());
-
-                switch (eleccion) {
-                    case 1:
-                        opcionValida = true;
-                        top10PorPais();
-                        break;
-                    case 2:
-                        opcionValida = true;
-                        top5PorDia();
-                        break;
-                    case 3:
-                        opcionValida = true;
-                        top7PorRango();
-                        break;
-                    case 4:
-                        opcionValida = true;
-                        countArtistAppearances();
-                        break;
-                    case 5:
-                        opcionValida = true;
-                        countSongsByTempoRangeAndDateRange();
-                        break;
-                    default:
-                        System.out.println("Por favor seleccione una opcion del 1-5");
-                        break;  // No need to call this.menu() again, the loop will repeat
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Por favor ingrese un número válido.");
-            }
+        Scanner scanner= new Scanner(System.in);
+        System.out.print("Bienvenido a Spotify!\n ¿Que consulta desea realizar? \n 1) Top 10 canciones en un país en un día dado. \n 2) Top 5 canciones que aparecen en más top 50 en un día dado.\n 3) Top 7 artistas que más aparecen en los top 50 para un rango de fechas \n 4) Cantidad de tops 50 en los que aparece un artista en una fecha \n 5) Cantidad de canciones con un tempo en un rango específico para un rango de fechas. \n Consulta: ");
+        System.out.println();
+        int eleccion = Integer.parseInt(scanner.nextLine());
+        if (eleccion==1){
+            top10PorPais();
         }
-
-        boolean respValida = false;
-        while (!respValida) {
-            System.out.println("Desea realizar otra consulta? \n 1) Si \n 2) No \n Respuesta: ");
-            try {
-                int resp = Integer.parseInt(scanner.nextLine());
-
-                switch (resp) {
-                    case 1:
-                        respValida = true;
-                        this.menu();
-                        break;
-                    case 2:
-                        respValida = true;
-                        System.out.println("Hasta la proxima!");
-                        break;
-                    default:
-                        System.out.println("Por favor seleccione una opcion valida (1 o 2)");
-                        break;
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Por favor ingrese un número válido.");
-            }
+        else if (eleccion==2){
+            top5PorDia();
+        }
+        else if (eleccion==3){
+            top7PorRango();
+        }
+        else if (eleccion==4){
+            countArtistAppearances();
+        }
+        else if (eleccion==5){
+            countSongsByTempoRangeAndDateRange();
+        }
+        else{
+            System.out.println("Porfavor seleccione una opcion del 1-5");
+            this.menu();
+        }
+        System.out.println("Desea realizar otra consulta? \n 1) Si \n 2) No \n Respuesta: ");
+        int resp = Integer.parseInt(scanner.nextLine());
+        if (resp==1){
+            this.menu();
+        }
+        else if (resp==0){
+            System.out.println("Hasta la proxima!");
         }
     }
+
+
 
 
 
@@ -175,8 +159,11 @@ public class SpotifyFunctions {
 
 
     public void top10PorPais() throws InformacionInvalida {
-        Scanner scanner = new Scanner(System.in);
+        int iterations = 10; // Número de iteraciones para calcular el promedio
+        long totalTime = 0;
+        long memoryBefore = getUsedMemory();
 
+        Scanner scanner = new Scanner(System.in);
         LocalDate fecha = null;
         boolean fechaValida = false;
 
@@ -209,19 +196,37 @@ public class SpotifyFunctions {
                 System.out.println("El país " + pais + " no está registrado. Por favor ingrese un país válido.");
             } else {
                 paisValido = true;
-                System.out.println("El top 10 en " + pais + " el " + fecha + " fue: ");
+
                 MyBinarySearchTreeImpl<Integer, Song> tree = hashCountry.getData(countryPosition);
                 List<Song> top50 = tree.inOrderValue();
-                for (int i = 0; i < 10; i++) {
-                    Song song = top50.get(i);
-                    System.out.println((i + 1) + ". " + song.getName() + " Artists: ");
+
+                // Iteraciones para calcular el promedio de tiempo de ejecución
+                for (int i = 0; i < iterations; i++) {
+                    long startIterTime = System.nanoTime();
+                    long endTime = System.nanoTime();
+                    long iterExecutionTime = endTime - startIterTime;
+                    totalTime += iterExecutionTime;
+                }
+
+                System.out.println("El top 10 en " + pais + " el " + fecha + " fue:");
+                for (int y = 0; y < 10; y++) {
+                    Song song = top50.get(y);
+                    System.out.println((y + 1) + ". " + song.getName());
                     for (int j = 0; j < song.getArtists().size(); j++) {
-                        System.out.println(song.getArtists().get(j).name);
+                        System.out.println("Artista: " + song.getArtists().get(j).name);
                     }
                 }
+                long averageTime = totalTime / iterations;  // Cálculo del tiempo promedio de ejecución
+                // Impresión de memoria y tiempo promedio
+                long memoryAfter = getUsedMemory();
+                printMemoryAndTime(memoryBefore, memoryAfter, totalTime, averageTime);
             }
         }
     }
+
+
+
+
 
 
     public void top5PorDia() throws InformacionInvalida {
@@ -267,8 +272,6 @@ public class SpotifyFunctions {
                     }
                 }
             }
-
-            // Transferir datos del hash a una lista
             for (int k = 0; k < SongsHash.getSize()  ; k++) {
                 HashNode<String, Integer> node = SongsHash.getNode(k);
                 if (node != null) {
@@ -276,20 +279,16 @@ public class SpotifyFunctions {
                     finalList.add(newNode);
                 }
             }
-
-            // Ordenar la lista de canciones por cantidad de apariciones (descendente)
             ordenamiento(finalList);
-
-            // Imprimir las top 5 canciones
             System.out.println("Las canciones más escuchadas el día " + fecha + " fueron:");
             for (int z = 0; z < Math.min(5, finalList.size()); z++) {
                 System.out.println((z + 1) + ". " + finalList.get(z).getData() + " con " + finalList.get(z).getValue() + " apariciones.");
+                System.out.println();
             }
         }
     }
 
     public void ordenamiento(MyList<HashNode<Integer, String>> newList) {
-        // Ordenamiento burbuja mejorado (Bubble Sort)
         for (int i = 0; i < newList.size() - 1; i++) {
             for (int j = 0; j < newList.size() - 1 - i; j++) {
                 if (newList.get(j).getValue() < newList.get(j + 1).getValue()) {
@@ -374,7 +373,6 @@ public class SpotifyFunctions {
 
     public void countSongsByTempoRangeAndDateRange() throws InformacionInvalida {
         Scanner scanner = new Scanner(System.in);
-
         LocalDate fechaInicio = null;
         LocalDate fechaFin = null;
         boolean fechasValidas = false;
@@ -461,7 +459,6 @@ public class SpotifyFunctions {
 
     public void top7PorRango() throws InformacionInvalida {
         Scanner scanner = new Scanner(System.in);
-
         LocalDate fechaI = null;
         LocalDate fechaF = null;
         boolean fechasValidas = false;
