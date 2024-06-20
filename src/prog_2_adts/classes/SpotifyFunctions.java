@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class SpotifyFunctions {
+public class SpotifyFunctions implements SpotifyInter {
 
-    private HashImpl<LocalDate, HashImpl<String, MyBinarySearchTreeImpl<Integer, Song>>> spotify = new HashImpl<>(210);
+    private HashImpl<LocalDate, HashImpl<String, MyBinarySearchTreeImpl<Integer, Song>>> spotify = new HashImpl<>(213); //ponemos más de 207 luygares que es el total de tuplas
     private MyList<Artist> artistsList = new MyLinkedListImpl<Artist>();
 
     public HashImpl<LocalDate, HashImpl<String, MyBinarySearchTreeImpl<Integer, Song>>> getSpotify() {
@@ -45,6 +45,7 @@ public class SpotifyFunctions {
         System.out.println("Tiempo de ejecución promedio: " + promedio + " nanosegundos");
     }
 
+    @Override
     public void menu() throws InformacionInvalida {
         Scanner scanner= new Scanner(System.in);
         System.out.print("Bienvenido a Spotify!\n ¿Que consulta desea realizar? \n 1) Top 10 canciones en un país en un día dado. \n 2) Top 5 canciones que aparecen en más top 50 en un día dado.\n 3) Top 7 artistas que más aparecen en los top 50 para un rango de fechas \n 4) Cantidad de tops 50 en los que aparece un artista en una fecha \n 5) Cantidad de canciones con un tempo en un rango específico para un rango de fechas. \n Consulta: ");
@@ -83,7 +84,7 @@ public class SpotifyFunctions {
 
 
 
-
+    @Override
     public void addInfoHash(String spotifyId, String name, MyList<Artist> artists, int dailyRank, String country, LocalDate snapshotDate, float tempo) throws InfoIncorrecta, InformacionInvalida {
         int posicion1 = this.spotify.search(snapshotDate);
         if (posicion1 != -1) {
@@ -96,7 +97,7 @@ public class SpotifyFunctions {
                 this.spotify.getData(posicion1).add(country, new MyBinarySearchTreeImpl<>(new TreeNode<>(dailyRank, new Song(spotifyId, name, artists, tempo, snapshotDate, dailyRank))));
             }
         } else {
-            HashImpl<String, MyBinarySearchTreeImpl<Integer, Song>> hash2 = new HashImpl<>(75); // num de paises
+            HashImpl<String, MyBinarySearchTreeImpl<Integer, Song>> hash2 = new HashImpl<>(75); // numero de paises
             this.spotify.add(snapshotDate, hash2);
             Song song = new Song(spotifyId, name, artists, tempo, snapshotDate, dailyRank);
             hash2.add(country, new MyBinarySearchTreeImpl<>(new TreeNode<>(dailyRank, song)));
@@ -110,7 +111,7 @@ public class SpotifyFunctions {
         }
     }
 
-
+    @Override
     public void readCVS() throws InformacionInvalida {
         String csvFile = "/Users/guadaluperial/Desktop/Spotify_canciones.csv";
 
@@ -157,7 +158,7 @@ public class SpotifyFunctions {
         }
     }
 
-
+    @Override
     public void top10PorPais() throws InformacionInvalida {
         int iterations = 10; // Número de iteraciones para calcular el promedio
         long totalTime = 0;
@@ -228,7 +229,7 @@ public class SpotifyFunctions {
 
 
 
-
+    @Override
     public void top5PorDia() throws InformacionInvalida {
         Scanner scanner = new Scanner(System.in);
         LocalDate fecha = null;
@@ -312,6 +313,7 @@ public class SpotifyFunctions {
         return null;
     }
 
+    @Override
     public void countArtistAppearances() throws InformacionInvalida {
         int res = 0;
         Scanner scanner = new Scanner(System.in);
@@ -370,7 +372,7 @@ public class SpotifyFunctions {
         }
     }
 
-
+    @Override
     public void countSongsByTempoRangeAndDateRange() throws InformacionInvalida {
         Scanner scanner = new Scanner(System.in);
         LocalDate fechaInicio = null;
@@ -456,7 +458,7 @@ public class SpotifyFunctions {
     }
 
 
-
+    @Override
     public void top7PorRango() throws InformacionInvalida {
         Scanner scanner = new Scanner(System.in);
         LocalDate fechaI = null;
