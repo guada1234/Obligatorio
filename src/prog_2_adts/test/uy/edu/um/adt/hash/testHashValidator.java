@@ -37,7 +37,7 @@ public class testHashValidator {
     @Test
     void testGet() {
         hash.add(5, "cinco");
-        assertEquals("five", hash.get(5));
+        assertEquals("cinco", hash.get(5));
         assertNull(hash.get(4));
     }
 
