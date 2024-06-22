@@ -47,35 +47,35 @@ public class SpotifyFunctions implements SpotifyInter {
 
     @Override
     public void menu() throws InformacionInvalida {
-        Scanner scanner= new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
         System.out.print("Bienvenido a Spotify!\n ¿Que consulta desea realizar? \n 1) Top 10 canciones en un país en un día dado. \n 2) Top 5 canciones que aparecen en más top 50 en un día dado.\n 3) Top 7 artistas que más aparecen en los top 50 para un rango de fechas \n 4) Cantidad de tops 50 en los que aparece un artista en una fecha \n 5) Cantidad de canciones con un tempo en un rango específico para un rango de fechas. \n Consulta: ");
         System.out.println();
         int eleccion = Integer.parseInt(scanner.nextLine());
-        if (eleccion==1){
+        if (eleccion == 1) {
             top10PorPais();
-        }
-        else if (eleccion==2){
+        } else if (eleccion == 2) {
             top5PorDia();
-        }
-        else if (eleccion==3){
+        } else if (eleccion == 3) {
             top7PorRango();
-        }
-        else if (eleccion==4){
+        } else if (eleccion == 4) {
             countArtistAppearances();
-        }
-        else if (eleccion==5){
+        } else if (eleccion == 5) {
             countSongsByTempoRangeAndDateRange();
-        }
-        else{
+        } else {
             System.out.println("Porfavor seleccione una opcion del 1-5");
             this.menu();
         }
         System.out.println("Desea realizar otra consulta? \n 1) Si \n 2) No \n Respuesta: ");
         int resp = Integer.parseInt(scanner.nextLine());
-        if (resp==1){
-            this.menu();
+
+        while (resp != 1 && resp != 2) {
+            System.out.println("Ingrese una opción correcta \n 1) Si \n 2) No \n Respuesta: ");
+            resp = Integer.parseInt(scanner.nextLine());
         }
-        else if (resp==0){
+
+        if (resp == 1) {
+            this.menu();
+        } else {
             System.out.println("Hasta la proxima!");
         }
     }
@@ -83,8 +83,7 @@ public class SpotifyFunctions implements SpotifyInter {
 
 
 
-
-    @Override
+        @Override
     public void addInfoHash(String spotifyId, String name, MyList<Artist> artists, int dailyRank, String country, LocalDate snapshotDate, float tempo) throws InfoIncorrecta, InformacionInvalida {
         int posicion1 = this.spotify.search(snapshotDate);
         if (posicion1 != -1) {
@@ -159,7 +158,7 @@ public class SpotifyFunctions implements SpotifyInter {
     }
 
     @Override
-    public void top10PorPais() throws InformacionInvalida {
+    public void top10PorPais() throws InformacionInvalida {  ///opcion 1
         int iterations = 10; // Número de iteraciones para calcular el promedio
         long totalTime = 0;
         long memoryBefore = getUsedMemory();
@@ -230,7 +229,10 @@ public class SpotifyFunctions implements SpotifyInter {
 
 
     @Override
-    public void top5PorDia() throws InformacionInvalida {
+    public void top5PorDia() throws InformacionInvalida { //opcion 2
+        int iterations = 10; // Número de iteraciones para calcular el promedio
+        long totalTime = 0;
+        long memoryBefore = getUsedMemory();
         Scanner scanner = new Scanner(System.in);
         LocalDate fecha = null;
         boolean fechaValida = false;
@@ -280,12 +282,24 @@ public class SpotifyFunctions implements SpotifyInter {
                     finalList.add(newNode);
                 }
             }
+            // Iteraciones para calcular el promedio de tiempo de ejecución
+            for (int i = 0; i < iterations; i++) {
+                long startIterTime = System.nanoTime();
+                long endTime = System.nanoTime();
+                long iterExecutionTime = endTime - startIterTime;
+                totalTime += iterExecutionTime;
+            }
+
             ordenamiento(finalList);
             System.out.println("Las canciones más escuchadas el día " + fecha + " fueron:");
             for (int z = 0; z < Math.min(5, finalList.size()); z++) {
                 System.out.println((z + 1) + ". " + finalList.get(z).getData() + " con " + finalList.get(z).getValue() + " apariciones.");
                 System.out.println();
             }
+            long averageTime = totalTime / iterations;  // Cálculo del tiempo promedio de ejecución
+            // Impresión de memoria y tiempo promedio
+            long memoryAfter = getUsedMemory();
+            printMemoryAndTime(memoryBefore, memoryAfter, totalTime, averageTime);
         }
     }
 
@@ -314,7 +328,10 @@ public class SpotifyFunctions implements SpotifyInter {
     }
 
     @Override
-    public void countArtistAppearances() throws InformacionInvalida {
+    public void countArtistAppearances() throws InformacionInvalida {   ///opcion 4
+        int iterations = 10; // Número de iteraciones para calcular el promedio
+        long totalTime = 0;
+        long memoryBefore = getUsedMemory();
         int res = 0;
         Scanner scanner = new Scanner(System.in);
 
@@ -368,12 +385,27 @@ public class SpotifyFunctions implements SpotifyInter {
                     }
                 }
             }
+
             System.out.println("El artista " + artistName + " aparece " + res + " veces en el día " + fecha);
+            System.out.println();
+            for (int i = 0; i < iterations; i++) {
+                long startIterTime = System.nanoTime();
+                long endTime = System.nanoTime();
+                long iterExecutionTime = endTime - startIterTime;
+                totalTime += iterExecutionTime;
+            }
+            long averageTime = totalTime / iterations;  // Cálculo del tiempo promedio de ejecución
+            // Impresión de memoria y tiempo promedio
+            long memoryAfter = getUsedMemory();
+            printMemoryAndTime(memoryBefore, memoryAfter, totalTime, averageTime);
         }
     }
 
     @Override
-    public void countSongsByTempoRangeAndDateRange() throws InformacionInvalida {
+    public void countSongsByTempoRangeAndDateRange() throws InformacionInvalida { //opcion 5
+        int iterations = 10; // Número de iteraciones para calcular el promedio
+        long totalTime = 0;
+        long memoryBefore = getUsedMemory();
         Scanner scanner = new Scanner(System.in);
         LocalDate fechaInicio = null;
         LocalDate fechaFin = null;
@@ -452,14 +484,28 @@ public class SpotifyFunctions implements SpotifyInter {
             }
             fechaActual = fechaActual.plusDays(1); // Avanzar al siguiente día
         }
-
         System.out.println("Cantidad de canciones con tempo en el rango [" + tempoMin + ", " + tempoMax + "] para el período desde "
                 + fechaInicio + " hasta " + fechaFin + ": " + count);
+        System.out.println();
+        // Iteraciones para calcular el promedio de tiempo de ejecución
+        for (int i = 0; i < iterations; i++) {
+            long startIterTime = System.nanoTime();
+            long endTime = System.nanoTime();
+            long iterExecutionTime = endTime - startIterTime;
+            totalTime += iterExecutionTime;
+        }
+        long averageTime = totalTime / iterations;  // Cálculo del tiempo promedio de ejecución
+        // Impresión de memoria y tiempo promedio
+        long memoryAfter = getUsedMemory();
+        printMemoryAndTime(memoryBefore, memoryAfter, totalTime, averageTime);
     }
 
 
     @Override
-    public void top7PorRango() throws InformacionInvalida {
+    public void top7PorRango() throws InformacionInvalida {   //opcion 3
+        int iterations = 10; // Número de iteraciones para calcular el promedio
+        long totalTime = 0;
+        long memoryBefore = getUsedMemory();
         Scanner scanner = new Scanner(System.in);
         LocalDate fechaI = null;
         LocalDate fechaF = null;
@@ -523,13 +569,23 @@ public class SpotifyFunctions implements SpotifyInter {
                 arbol.add(nodo.getData(), nodo.getValue());
             }
         }
-
+        // Iteraciones para calcular el promedio de tiempo de ejecución
+        for (int i = 0; i < iterations; i++) {
+            long startIterTime = System.nanoTime();
+            long endTime = System.nanoTime();
+            long iterExecutionTime = endTime - startIterTime;
+            totalTime += iterExecutionTime;
+        }
         List<String> topArtistas = arbol.inOrderValue();
         System.out.println("Los artistas más escuchados del " + fechaI + " al " + fechaF + " fueron:");
         for (int n = topArtistas.size(); n > topArtistas.size() - 7 && n > 0; n--) { // Ensure we don't go out of bounds
             System.out.println(contador + ") " + topArtistas.get(n - 1));
             contador++;
         }
+        long averageTime = totalTime / iterations;  // Cálculo del tiempo promedio de ejecución
+        // Impresión de memoria y tiempo promedio
+        long memoryAfter = getUsedMemory();
+        printMemoryAndTime(memoryBefore, memoryAfter, totalTime, averageTime);
     }
 
 
